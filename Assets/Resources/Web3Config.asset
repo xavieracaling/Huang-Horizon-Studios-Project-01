@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 512a0f920c4549c6b8fa15ad0baa6cca, type: 3}
   m_Name: Web3Config
   m_EditorClassIdentifier: 
-  <ProjectId>k__BackingField: 
+  <ProjectId>k__BackingField: 8b83f7c5-7f68-4b6e-b89f-b580287de703
   <EnableAnalytics>k__BackingField: 1
   <ChainConfigs>k__BackingField:
   - <ChainId>k__BackingField: 97

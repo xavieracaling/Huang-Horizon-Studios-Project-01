@@ -397,6 +397,16 @@
       },
       "hash": "f7389b7254017ba7293f9cd4a70fbe5d425691bf"
     },
+    "io.chainsafe.web3-unity.web3auth": {
+      "version": "https://github.com/ChainSafe/web3.unity.git?path=/Packages/io.chainsafe.web3-unity.web3auth",
+      "depth": 0,
+      "source": "git",
+      "dependencies": {
+        "com.unity.nuget.newtonsoft-json": "3.0.2",
+        "io.chainsafe.web3-unity": "3.0.5"
+      },
+      "hash": "f7389b7254017ba7293f9cd4a70fbe5d425691bf"
+    },
     "com.unity.modules.accessibility": {
       "version": "1.0.0",
       "depth": 0,

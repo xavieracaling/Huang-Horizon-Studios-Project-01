@@ -1,1 +1,0 @@
-                await EventManager.Subscribe<{EVENT_NAME_CSHARP}EventDTO>({EVENT_NAME_CSHARP}, ContractAddress);

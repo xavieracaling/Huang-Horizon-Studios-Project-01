@@ -1,2 +1,0 @@
-        [Parameter("{TRUE_TYPE}", "{TRUE_NAME}", {PARAM_ORDER}, {PARAM_INDEXED})]
-        public virtual {CSHARP_TYPE} {CSHARP_NAME} { get; set; }

@@ -404,6 +404,16 @@
       },
       "hash": "f2fb23c38400a4ac98c597ae273b052403947f99"
     },
+    "io.chainsafe.web3-unity.hyperplay": {
+      "version": "https://github.com/ChainSafe/web3.unity.git?path=/Packages/io.chainsafe.web3-unity.hyperplay",
+      "depth": 0,
+      "source": "git",
+      "dependencies": {
+        "com.unity.nuget.newtonsoft-json": "3.0.2",
+        "io.chainsafe.web3-unity": "3.0.6"
+      },
+      "hash": "4d7b165aa5fba6ba39e934fffd84476dfe571afa"
+    },
     "nuget.mono-cecil": {
       "version": "1.0.0",
       "depth": 1,

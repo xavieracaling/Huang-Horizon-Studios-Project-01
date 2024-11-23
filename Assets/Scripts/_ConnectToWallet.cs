@@ -22,12 +22,18 @@ using ChainSafe.Gaming.UnityPackage;
 
         [SerializeField] private Button copyAddressButton;
 
-        [Space] [SerializeField] private Transform connectedTransform;
+        [Space]  public Transform ConnectedTransform;
 
-        [SerializeField] private Transform disconnectedTransform;
-
+        public Transform DisconnectedTransform;
+        
+        public static _ConnectToWallet Instance;
+        void Awake()
+        {
+            Instance = this;
+        }
         private async void Start()
         {
+            DisconnectedTransform.gameObject.SetActive(true);
             try
             {
                 await Web3Unity.Instance.Initialize(rememberMe);
@@ -56,14 +62,15 @@ using ChainSafe.Gaming.UnityPackage;
 
         private void ConnectionStateChanged(bool connected, string address = "")
         {
-            Debug.Log($"{connected} connected");
-            connectedTransform.gameObject.SetActive(connected);
+            // ConnectedTransform.gameObject.SetActive(connected);
             
-            disconnectedTransform.gameObject.SetActive(!connected);
+            // disconnectedTransform.gameObject.SetActive(!connected);
     
             if (connected)
             {
+                UIManager.Instance.DisconnectedTransform.SetActive(false);
                 _EVM.Instance.InitializeContract();
+                PlayFabManager.Instance.CustomLogin(address);
                 addressText.text = address;
             }
         }
@@ -78,12 +85,12 @@ using ChainSafe.Gaming.UnityPackage;
         private async void Disconnect()
         {
             await Web3Unity.Instance.Disconnect();
+            UIManager.Instance.DisconnectedSceneUI();
         }
 
         public Task OnLogout()
         {
-            ConnectionStateChanged(false);
-
+            UIManager.Instance.DisconnectedSceneUI();
             return Task.CompletedTask;
         }
 

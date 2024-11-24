@@ -127,16 +127,21 @@ public class PlayFabManager : MonoBehaviour
             }
         }, error =>
         {
+            UIManager.Instance.InstantiateMessagerPopPrefab_Restart("Server error, please restart the game.");
             Debug.LogError("Failed to get user data: " + error.GenerateErrorReport());
         }); 
         
     }
     public IEnumerator UpdateLoginSession()
     {
+        GameObject loading = UIManager.Instance.LoadingShow();
+        loading.transform.SetAsLastSibling();
         GetLoginSession();
         while(string.IsNullOrEmpty( LoginStateUpdatedSession))
             yield return new WaitForEndOfFrame();
 
+        yield return new WaitForSeconds(1f);
+        Destroy(loading);
         if(LoginStateUpdatedSession != "-1") //if LoginStateSession exists already
         {
             string newLoginID = LoginStateUpdatedSession;
@@ -167,18 +172,21 @@ public class PlayFabManager : MonoBehaviour
             Debug.Log($"Player data ID updated successfully. {LoginStateSession} ");
         }, error =>
         {
+            UIManager.Instance.InstantiateMessagerPopPrefab_Restart("Server error, please restart the game.");
             Debug.LogError("Failed to update user data: " + error.GenerateErrorReport());
         });
     }
     public IEnumerator IExecuteWithSessionCheck(System.Action action)
     {
         // Start session check
+        GameObject loading = UIManager.Instance.LoadingShow();
+        loading.transform.SetAsLastSibling();
         PlayFabManager.Instance.GetLoginSession();
-
         // Wait for session status to update
         while (PlayFabManager.Instance.LoginSessionCheckStatus == "")
             yield return new WaitForEndOfFrame();
-
+        yield return new WaitForSeconds(1f);
+        Destroy(loading);
         // Handle session status
         if (PlayFabManager.Instance.LoginSessionCheckStatus == "1")
         {
@@ -187,6 +195,7 @@ public class PlayFabManager : MonoBehaviour
         }
         else if (PlayFabManager.Instance.LoginSessionCheckStatus == "-1")
         {
+            UIManager.Instance.InstantiateMessagerPopPrefab_Restart("Your login session has now expired, please login again.");
             Debug.Log("Your login session has now expired, please login again.");
             // Handle expired session (e.g., redirect to login)
         }

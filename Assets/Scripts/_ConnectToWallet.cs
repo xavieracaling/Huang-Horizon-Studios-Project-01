@@ -52,20 +52,11 @@ using ChainSafe.Gaming.UnityPackage;
 
             disconnectButton.onClick.AddListener(Disconnect);
 
-            // copyAddressButton.onClick.AddListener(CopyAddress);
-
-            // void CopyAddress()
-            // {
-            //     ClipboardManager.CopyText(addressText.text);
-            // }
+           
         }
 
         private void ConnectionStateChanged(bool connected, string address = "")
         {
-            // ConnectedTransform.gameObject.SetActive(connected);
-            
-            // disconnectedTransform.gameObject.SetActive(!connected);
-    
             if (connected)
             {
                 UIManager.Instance.DisconnectedTransform.SetActive(false);
@@ -78,7 +69,6 @@ using ChainSafe.Gaming.UnityPackage;
         public Task OnWeb3Initialized(CWeb3 web3)
         {
             ConnectionStateChanged(true, web3.Signer.PublicAddress);
-
             return Task.CompletedTask;
         }
 

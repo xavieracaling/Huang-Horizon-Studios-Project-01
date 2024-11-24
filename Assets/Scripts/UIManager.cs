@@ -6,6 +6,7 @@ using UnityEngine.UI;
 public class UIManager : MonoBehaviour
 {
     public Text AddressPlayerUI;
+    public Text NamePlayerUI;
     public InputField NameUI;
     public GameObject NameContainerUI;
     public GameObject MainSceneConnectedUI;
@@ -22,7 +23,8 @@ public class UIManager : MonoBehaviour
     }
     public void ConnectedSceneUI()
     {
-        AddressPlayerUI.text = PlayFabManager.Instance.CustomUserID;
+        NamePlayerUI.text = PlayFabManager.Instance.PlayerName;
+        AddressPlayerUI.text = PlayFabManager.Instance.CustomUserIDAddress;
         MainSceneConnectedUI.SetActive(true);
         DisconnectedTransform.SetActive(false);
     } 

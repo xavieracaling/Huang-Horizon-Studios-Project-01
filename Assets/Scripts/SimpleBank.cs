@@ -104,7 +104,6 @@ namespace ChainSafe.Gaming.Evm.Contracts.Custom
                 if(EventManager == null)
                     return;
 
-
             
             
             }catch(Exception e)

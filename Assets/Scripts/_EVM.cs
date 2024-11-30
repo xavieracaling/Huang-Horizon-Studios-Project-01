@@ -41,35 +41,7 @@ public class _EVM : MonoBehaviour
         {
             Instance = this;
         }
-         // Function to hash account address and amount (similar to web3.utils.soliditySha3)
-        public  string SoliditySha3(string account, decimal amount)
-        {
-            // Remove "0x" prefix if present
-            if (account.StartsWith("0x"))
-                account = account.Substring(2);
-
-            // Convert account address to byte array
-            byte[] accountBytes = account.HexToByteArray();
-
-            // Convert amount to Wei (1 Ether = 10^18 Wei) and then to a byte array
-            BigInteger weiAmount = Nethereum.Web3.Web3.Convert.ToWei(amount);
-            byte[] amountBytes = weiAmount.ToByteArray();
-
-            // Ensure correct byte order (big-endian for Solidity compatibility)
-            if (BitConverter.IsLittleEndian)
-                Array.Reverse(amountBytes);
-
-            // Concatenate the byte arrays
-            byte[] combinedBytes = new byte[accountBytes.Length + amountBytes.Length];
-            Buffer.BlockCopy(accountBytes, 0, combinedBytes, 0, accountBytes.Length);
-            Buffer.BlockCopy(amountBytes, 0, combinedBytes, accountBytes.Length, amountBytes.Length);
-
-            // Perform Keccak256 hash
-            byte[] hashBytes = sha3.CalculateHash(combinedBytes);
-            // Convert the byte array hash to a hex string
-            string hashHex = "0x" + hashBytes.ToHex();
-            return hashHex;
-        }
+       
         public async void InitializeContract () {
             
             Debug.Log($"start build");
@@ -130,7 +102,7 @@ public class _EVM : MonoBehaviour
 
         }
         public void _Withdraw() => Withdraw() ;
-     
+
         public async void Withdraw()
         {
                 decimal ethAmount = decimal.Parse(AmountUI.text); // Using decimal for better precision
@@ -162,7 +134,7 @@ public class _EVM : MonoBehaviour
 
 
         }
-
+        
         public void _GetBalances() =>GetBalances();
 
         public async void GetBalances()

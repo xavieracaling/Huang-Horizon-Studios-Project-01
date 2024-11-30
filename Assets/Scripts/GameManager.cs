@@ -60,10 +60,10 @@ public class GameManager : MonoBehaviour
                 randomXStartPos = Random.Range(-987,-605);
                 yPosStarting = -48;
             }
-            rusher.GetComponent<Button>().onClick.AddListener(() => Destroy(rusher));
-
+            rusher.GetComponent<Button>().onClick.AddListener(() => {rusher.transform.DOKill();Destroy(rusher);} );
+    
             rusher.transform.localPosition = new UnityEngine.Vector2(randomXStartPos,yPosStarting);
-            rusher.transform.DOLocalMoveX(targetXEndPos,2f).SetEase(Ease.Linear).OnComplete(() => {if(rusher!= null) Destroy(rusher);} );
+            rusher.transform.DOLocalMoveX(targetXEndPos,Random.Range(2.5f,4.6f)).SetEase(Ease.Linear).OnComplete(() => {if(rusher!= null) Destroy(rusher);} );
             yield return new WaitForSeconds(Random.Range(0.1f,1.2f));
         }
         

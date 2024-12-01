@@ -2,10 +2,10 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System;
+using GUPS.AntiCheat.Protected;
 
 [Serializable]
-
-public class PlayerBoosterPack : BoosterPack
+public class PlayerBoosterPackUnProtected : BoosterPackUnProtected
 { 
     //id
     //duration 
@@ -20,17 +20,31 @@ public class PlayerBoosterPack : BoosterPack
     public float BNBEarnPerClick;
     public int AvailableClicks;
     public float TotalBNBEarned;
+    public PlayerBoosterPackProtected GetReturnType(PlayerBoosterPackProtected boosterPackProtected) //convert to PlayerBoosterPackProtected
+    {
+        return BoosterPackConverter.ConvertToPlayerBoosterPackProtected(this);
+    }
+    public override string ToString()
+    {
+        return "UnProtectd PlayerBoosterPackUnProtected class";
+    }
 }
 [Serializable]
 
-public class BoosterPack 
+public class BoosterPackUnProtected : BoosterProtect<BoosterPackProtected>
 { 
+    public float Price;
     public string BoosterPacksTypes;
     public int FinalTimeExpire;
     public float OriginalMultiplier;
+    public override BoosterPackProtected GetReturnType(BoosterPackProtected boosterPackProtected) //convert to BoosterPackProtected
+    {
+        return BoosterPackConverter.ConvertToBoosterPackProtected(this);
+    }
+    public override string ToString()
+    {
+        return "UnProtectd BoosterPack class";
+    }
+    
 }
-[Serializable]
-public class ShopBoosterPack : BoosterPack
-{ 
-    public bool AvailableToBuy = true;
-}
+

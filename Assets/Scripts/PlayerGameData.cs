@@ -7,5 +7,5 @@ public class PlayerGameData
 {
     //referralMultiplierPoints
     public float TotalReferralMultiplierPoints;
-    public List<PlayerBoosterPack> OwnedBoosterPacks = new List<PlayerBoosterPack>();
+    public List<PlayerBoosterPackUnProtected> OwnedBoosterPacks = new List<PlayerBoosterPackUnProtected>();
 }

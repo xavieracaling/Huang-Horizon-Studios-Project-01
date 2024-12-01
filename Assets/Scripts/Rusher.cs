@@ -5,6 +5,7 @@ using UnityEngine.UI;
 using DG.Tweening;
 using UnityEngine.UIElements;
 using Unity.VisualScripting;
+using GUPS.AntiCheat.Protected;
 public class Rusher : MonoBehaviour
 {
     public bool Explode;
@@ -43,7 +44,7 @@ public class Rusher : MonoBehaviour
                 }).SetEase(Ease.Linear);;
                 Destroy(effect,0.15f);
             }
-                UIManager.Instance.UpdateUIClicks(GameManager.Instance.TestAvailClicks,GameManager.Instance.TestTotalBNBEarned );
+                UIManager.Instance.UpdateUIClicks((int)GameManager.Instance.TestAvailClicks,(float)GameManager.Instance.TestTotalBNBEarned );
 
             transform.DOKill();
             Destroy(gameObject);

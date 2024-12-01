@@ -4,6 +4,7 @@ using UnityEngine;
 using PlayFab;
 using PlayFab.ClientModels;
 using System.Linq;
+using Newtonsoft.Json;
 public class PlayFabManager : MonoBehaviour
 {
     public string LoginSessionCheckStatus;
@@ -16,6 +17,25 @@ public class PlayFabManager : MonoBehaviour
     void Awake()
     {
         Instance = this;
+        PlayerBoosterPackProtected boosterPackProtected = new PlayerBoosterPackProtected{
+            ID = 9999,
+            DailyTimeExpire = 5464,
+            BNBEarnPerClick = 0.44444f,
+            FinalTimeExpire = 89,
+            BoosterPacksTypes = "FAK",
+            OriginalMultiplier = 5
+        };
+
+        PlayerBoosterPackUnProtected boosterPackSerialized = boosterPackProtected.GetReturnType(new PlayerBoosterPackUnProtected{});
+        
+        string ser = JsonConvert.SerializeObject(boosterPackSerialized,Formatting.Indented);
+
+        Debug.Log($"test {ser} \n {boosterPackSerialized.ToString()}");
+
+        PlayerBoosterPackProtected boosterPackBoosterPackProtectedGet = boosterPackSerialized.GetReturnType(new PlayerBoosterPackProtected{});
+
+        Debug.Log($"PlayerBoosterPackProtected {boosterPackBoosterPackProtectedGet.FinalTimeExpire} , {boosterPackBoosterPackProtectedGet.BoosterPacksTypes} \n {boosterPackBoosterPackProtectedGet.ToString()}");
+
     }
     public void CustomLogin(string customID)
     {

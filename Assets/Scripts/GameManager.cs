@@ -5,6 +5,7 @@ using DG.Tweening;
 using UnityEngine;
 using UnityEngine.UI;
 using Newtonsoft.Json;
+using GUPS.AntiCheat.Protected;
 public class GameManager : MonoBehaviour
 {
     public static GameManager Instance;
@@ -19,10 +20,11 @@ public class GameManager : MonoBehaviour
     public List<GameObject>  ListEffectRush = new List<GameObject>();
 
     public PlayerGameData _PlayerGameData;
-    public int TestAvailClicks = 200;
-    public float TestTotalBNBEarned;
+    public ProtectedInt64 TestAvailClicks = 200;
+    public ProtectedFloat TestTotalBNBEarned;
     void Awake()
     {
+     
         Instance = this;
     }
     

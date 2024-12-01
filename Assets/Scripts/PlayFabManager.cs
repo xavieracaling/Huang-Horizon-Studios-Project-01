@@ -13,28 +13,33 @@ public class PlayFabManager : MonoBehaviour
     public string LoginStateUpdatedSession;
     public string CustomUserIDAddress;
     public static PlayFabManager Instance;
-    
+
     void Awake()
     {
         Instance = this;
         PlayerBoosterPackProtected boosterPackProtected = new PlayerBoosterPackProtected{
             ID = 9999,
             DailyTimeExpire = 5464,
-            BNBEarnPerClick = 0.44444f,
+            BNBEarnPerClick = 0.06f,
             FinalTimeExpire = 89,
-            BoosterPacksTypes = "FAK",
-            OriginalMultiplier = 5
+            BoosterPacksTypes = BoosterPacksTypes.D.ToString(),
+            OriginalMultiplier = 5,
+            ClickRate =  new ClickRateProtected{
+                Win = 80,
+                Lose = 20,
+            }
         };
+        GameManager.Instance._PlayerGameDataProtected = new PlayerGameDataProtected(){
+            OwnedBoosterPacks = new List<PlayerBoosterPackProtected>(){
+                boosterPackProtected
+            },
 
-        PlayerBoosterPackUnProtected boosterPackSerialized = boosterPackProtected.GetReturnType(new PlayerBoosterPackUnProtected{});
-        
-        string ser = JsonConvert.SerializeObject(boosterPackSerialized,Formatting.Indented);
+        };
+        PlayerGameDataUnProtected playerGameDataUnProtected = GameManager.Instance._PlayerGameDataProtected.ConvertToPlayerGameDataUnProtected();
+        string serPlayerGameDataUnProtected = JsonConvert.SerializeObject(playerGameDataUnProtected,Formatting.Indented);
 
-        Debug.Log($"test {ser} \n {boosterPackSerialized.ToString()}");
+        Debug.Log($"serPlayerGameDataUnProtected {serPlayerGameDataUnProtected} ");
 
-        PlayerBoosterPackProtected boosterPackBoosterPackProtectedGet = boosterPackSerialized.GetReturnType(new PlayerBoosterPackProtected{});
-
-        Debug.Log($"PlayerBoosterPackProtected {boosterPackBoosterPackProtectedGet.FinalTimeExpire} , {boosterPackBoosterPackProtectedGet.BoosterPacksTypes} \n {boosterPackBoosterPackProtectedGet.ToString()}");
 
     }
     public void CustomLogin(string customID)
@@ -49,7 +54,7 @@ public class PlayFabManager : MonoBehaviour
                 GetUserAccountInfo = true
             }// Creates a new account if one doesn't exist
         };
-        
+
         PlayFabClientAPI.LoginWithCustomID(request, onLoginSuccess, onLoginFailure);
     }
 
@@ -76,7 +81,7 @@ public class PlayFabManager : MonoBehaviour
         UIManager.Instance.DisconnectedSceneUI();
 
     }
-   
+
     public void SetNickname()
     {
         if(UIManager.Instance.NameUI.text.Count() > 0)
@@ -129,7 +134,7 @@ public class PlayFabManager : MonoBehaviour
                             Debug.Log("Session Login ID is still usable.");
                             LoginSessionCheckStatus = "1";
                         }
-                        
+
                    }
                 }
                 else
@@ -150,8 +155,8 @@ public class PlayFabManager : MonoBehaviour
         {
             UIManager.Instance.InstantiateMessagerPopPrefab_Restart("Server error, please restart the game.");
             Debug.LogError("Failed to get user data: " + error.GenerateErrorReport());
-        }); 
-        
+        });
+
     }
     public IEnumerator UpdateLoginSession()
     {
@@ -222,5 +227,5 @@ public class PlayFabManager : MonoBehaviour
         }
     }
     public void ExecuteWithSessionCheck(System.Action action) => StartCoroutine(IExecuteWithSessionCheck(action));
-    
+
 }

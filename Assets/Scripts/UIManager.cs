@@ -33,8 +33,8 @@ public class UIManager : MonoBehaviour
             availableClicks = 0;
         if(totalBNBEarnedUI <= 0)
             totalBNBEarnedUI = 0;
-        AvailableClicksUI.text = $"AVAILABLE CLICKS:{availableClicks}";
-        TotalBNBEarnedUI.text = $"TOTAL BNB EARNED:{totalBNBEarnedUI.ToString("0.00000")} BNB";
+        AvailableClicksUI.text = $"AVAILABLE CLICKS: {availableClicks}";
+        TotalBNBEarnedUI.text = $"TOTAL BNB EARNED: {totalBNBEarnedUI.ToString("0.000000")} BNB";
     }
     public void ConnectedSceneUI()
     {

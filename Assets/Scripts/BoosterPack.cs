@@ -14,6 +14,7 @@ public class PlayerBoosterPackUnProtected : BoosterPackUnProtected
     //current multiplier
 
     //daily earn
+    
     public int ID;
     public int DailyTimeExpire;
     public float CurrentMultiplier;
@@ -33,6 +34,9 @@ public class PlayerBoosterPackUnProtected : BoosterPackUnProtected
 
 public class BoosterPackUnProtected : BoosterProtect<BoosterPackProtected>
 { 
+    public ClickRateUnProtected ClickRate;
+    public int ImageIndex;
+    public string Title;
     public float Price;
     public string BoosterPacksTypes;
     public int FinalTimeExpire;

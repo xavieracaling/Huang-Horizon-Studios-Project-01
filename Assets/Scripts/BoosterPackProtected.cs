@@ -34,11 +34,14 @@ public class PlayerBoosterPackProtected  : BoosterPackProtected
 
 public class BoosterPackProtected : BoosterProtect<BoosterPackUnProtected>
 { 
+    public ClickRateProtected ClickRate;
+    public int ImageIndex;
+    public string Title;
     public ProtectedFloat Price;
     public ProtectedString BoosterPacksTypes;
     public ProtectedInt64 FinalTimeExpire;
     public ProtectedFloat OriginalMultiplier;
-
+    
     public override BoosterPackUnProtected GetReturnType(BoosterPackUnProtected boosterPack) //serialize
     {
         return BoosterPackConverter.ConvertToBoosterPackUnProtected(this);

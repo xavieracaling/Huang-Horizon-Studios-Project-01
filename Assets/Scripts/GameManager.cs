@@ -19,8 +19,8 @@ public class GameManager : MonoBehaviour
     public GameObject PrefabBNBUIText;
     public List<GameObject>  ListEffectRush = new List<GameObject>();
 
-    public PlayerGameData _PlayerGameData;
-    public ProtectedInt64 TestAvailClicks = 200;
+    public PlayerGameDataProtected _PlayerGameDataProtected;
+    public ProtectedInt64 TestAvailClicks = 50;
     public ProtectedFloat TestTotalBNBEarned;
     void Awake()
     {

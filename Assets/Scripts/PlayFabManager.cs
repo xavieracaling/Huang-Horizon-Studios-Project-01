@@ -17,28 +17,28 @@ public class PlayFabManager : MonoBehaviour
     void Awake()
     {
         Instance = this;
-        PlayerBoosterPackProtected boosterPackProtected = new PlayerBoosterPackProtected{
-            ID = 9999,
-            DailyTimeExpire = 5464,
-            BNBEarnPerClick = 0.06f,
-            FinalTimeExpire = 89,
-            BoosterPacksTypes = BoosterPacksTypes.D.ToString(),
-            OriginalMultiplier = 5,
-            ClickRate =  new ClickRateProtected{
-                Win = 80,
-                Lose = 20,
-            }
-        };
-        GameManager.Instance._PlayerGameDataProtected = new PlayerGameDataProtected(){
-            OwnedBoosterPacks = new List<PlayerBoosterPackProtected>(){
-                boosterPackProtected
-            },
+        // PlayerBoosterPackProtected boosterPackProtected = new PlayerBoosterPackProtected{
+        //     ID = 9999,
+        //     DailyTimeExpire = 5464,
+        //     BNBEarnPerClick = 0.06f,
+        //     FinalTimeExpire = 89,
+        //     BoosterPacksTypes = BoosterPacksTypes.C.ToString(),
+        //     OriginalMultiplier = 5,
+        //     ClickRate =  new ClickRateProtected{
+        //         Win = 80,
+        //         Lose = 20,
+        //     }
+        // };
+        // GameManager.Instance._PlayerGameDataProtected = new PlayerGameDataProtected(){
+        //     OwnedBoosterPacks = new List<PlayerBoosterPackProtected>(){
+        //         boosterPackProtected
+        //     },
 
-        };
-        PlayerGameDataUnProtected playerGameDataUnProtected = GameManager.Instance._PlayerGameDataProtected.ConvertToPlayerGameDataUnProtected();
-        string serPlayerGameDataUnProtected = JsonConvert.SerializeObject(playerGameDataUnProtected,Formatting.Indented);
+        // };
+        // PlayerGameDataUnProtected playerGameDataUnProtected = GameManager.Instance._PlayerGameDataProtected.ConvertToPlayerGameDataUnProtected();
+        // string serPlayerGameDataUnProtected = JsonConvert.SerializeObject(playerGameDataUnProtected,Formatting.Indented);
 
-        Debug.Log($"serPlayerGameDataUnProtected {serPlayerGameDataUnProtected} ");
+        // Debug.Log($"serPlayerGameDataUnProtected {serPlayerGameDataUnProtected} ");
 
 
     }
@@ -65,6 +65,29 @@ public class PlayFabManager : MonoBehaviour
         if (result.NewlyCreated)
         {
             Debug.Log($"New account created!");
+            PlayerGameDataUnProtected playerGameDataUnProtected = new PlayerGameDataUnProtected{
+                OwnedBoosterPacks = new List<PlayerBoosterPackUnProtected>()
+            };
+
+            string serial = JsonConvert.SerializeObject(playerGameDataUnProtected);
+            var request = new UpdateUserDataRequest
+            {
+                Data = new Dictionary<string, string>
+                {
+                    { "PlayerGameData",  serial }
+                }
+            };
+
+            PlayFabClientAPI.UpdateUserData(request, result =>
+            {
+                GameManager.Instance._PlayerGameDataProtected = playerGameDataUnProtected.ConvertToPlayerGameDataProtected();
+                Debug.Log($"Player GameData updated successfully. {LoginStateSession} ");
+            }, error =>
+            {
+                UIManager.Instance.InstantiateMessagerPopPrefab_Restart("Server error, please restart the game.");
+                Debug.LogError("Failed to update user data: " + error.GenerateErrorReport());
+            });
+            
             UIManager.Instance.NameContainerUI.SetActive(true);
         }
         else
@@ -81,7 +104,49 @@ public class PlayFabManager : MonoBehaviour
         UIManager.Instance.DisconnectedSceneUI();
 
     }
+    public void BoughtBoosterPack(BoosterPackProtected boosterPackProtected)
+    {
+        PlayerBoosterPackUnProtected playerBoosterPackProtected = new PlayerBoosterPackUnProtected{
+            ID = Random.Range(0,1000),
+            DailyTimeExpire = 1,
+            CurrentMultiplier = 1.4f,
+            BNBEarnPerClick = ((boosterPackProtected.Price * 1.4f) / 30) / 50,
+            AvailableClicks = 50,
+            TotalBNBEarned = 0,
 
+            ClickRate = new ClickRateUnProtected {
+                Win = boosterPackProtected.ClickRate.Win,
+                Lose = boosterPackProtected.ClickRate.Lose
+            } , 
+            ImageIndex = boosterPackProtected.ImageIndex, 
+            Title = boosterPackProtected.Title, 
+            Price = boosterPackProtected.Price, 
+            BoosterPacksTypes = (string) boosterPackProtected.BoosterPacksTypes, 
+            FinalTimeExpire = (int) boosterPackProtected.FinalTimeExpire, 
+            OriginalMultiplier = (float) boosterPackProtected.OriginalMultiplier
+        };
+        PlayerGameDataUnProtected playerGameDataUnProtected = GameManager.Instance._PlayerGameDataProtected.ConvertToPlayerGameDataUnProtected();
+        playerGameDataUnProtected.OwnedBoosterPacks.Add(playerBoosterPackProtected);
+
+        GameManager.Instance._PlayerGameDataProtected = playerGameDataUnProtected.ConvertToPlayerGameDataProtected();
+        string serial = JsonConvert.SerializeObject(playerGameDataUnProtected);
+        var request = new UpdateUserDataRequest
+        {
+            Data = new Dictionary<string, string>
+            {
+                { "PlayerGameData",  serial }
+            }
+        };
+
+        PlayFabClientAPI.UpdateUserData(request, result =>
+        {
+            Debug.Log($"Player GameData updated successfully. {LoginStateSession} ");
+        }, error =>
+        {
+            UIManager.Instance.InstantiateMessagerPopPrefab_Restart("Server error, please restart the game.");
+            Debug.LogError("Failed to update user data: " + error.GenerateErrorReport());
+        });
+    }
     public void SetNickname()
     {
         if(UIManager.Instance.NameUI.text.Count() > 0)

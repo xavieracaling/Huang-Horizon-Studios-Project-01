@@ -6,6 +6,7 @@ using UnityEngine.UI;
 
 public class UIManager : MonoBehaviour
 {
+    public List<Sprite> BoosterPackIcons = new List<Sprite>();
     public Text AddressPlayerUI;
     public Text NamePlayerUI;
     public Text BNBUI;
@@ -34,7 +35,7 @@ public class UIManager : MonoBehaviour
         if(totalBNBEarnedUI <= 0)
             totalBNBEarnedUI = 0;
         AvailableClicksUI.text = $"AVAILABLE CLICKS: {availableClicks}";
-        TotalBNBEarnedUI.text = $"TOTAL BNB EARNED: {totalBNBEarnedUI.ToString("0.000000")} BNB";
+        TotalBNBEarnedUI.text = $"TOTAL BNB EARNED: {totalBNBEarnedUI.ToString("0.0000000")} BNB";
     }
     public void ConnectedSceneUI()
     {

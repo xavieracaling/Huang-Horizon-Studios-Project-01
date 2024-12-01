@@ -61,7 +61,7 @@ public class _EVM : MonoBehaviour
             float wei = float.Parse(balance.ToString());
             float decimals = 1000000000000000000; // 18 decimals
             float eth = wei / decimals;
-            UIManager.Instance.BNBUI.text = eth.ToString("0.000000");
+            UIManager.Instance.BNBUI.text = eth.ToString("0.0000000");
             Debug.Log($"balance BNB {eth}");
 
         }
@@ -81,14 +81,13 @@ public class _EVM : MonoBehaviour
             float wei = float.Parse(balance.ToString());
             float decimals = 1000000000000000000; // 18 decimals
             float eth = wei / decimals;
-            UIManager.Instance.BNBUI.text = eth.ToString("0.000000");
-            Debug.Log($"balance BNB {eth}");
+            UIManager.Instance.BNBUI.text = eth.ToString("0.0000000");
 
         }
-        public void _DepositAmount() => DepositAmount() ;
-        public async void DepositAmount()
+        public void _DepositAmount() => DepositAmount(0.05f, () => {Debug.Log("sUCESS Deposited");}) ;
+        public async Task DepositAmount(float amountDeposit, Action action )
         {
-            float eth = float.Parse(AmountUI.text.ToString());
+            float eth = amountDeposit;
             float decimals = 1000000000000000000; // 18 decimals
 
             float wei = eth * decimals;
@@ -98,6 +97,7 @@ public class _EVM : MonoBehaviour
             var result = await simpleBank.DepositWithReceipt(new ChainSafe.Gaming.Evm.Transactions.TransactionRequest{
                 Value = new HexBigInteger(amount),
             });
+            action.Invoke();
             Debug.Log($"Deposited! {result.Status} ");
 
         }
@@ -105,32 +105,31 @@ public class _EVM : MonoBehaviour
 
         public async void Withdraw()
         {
-                decimal ethAmount = decimal.Parse(AmountUI.text); // Using decimal for better precision
-                BigInteger weiAmount = Nethereum.Web3.Web3.Convert.ToWei(ethAmount, UnitConversion.EthUnit.Ether);
-                // Step 2: Sign the message (address + amount)
+            decimal ethAmount = decimal.Parse(AmountUI.text); // Using decimal for better precision
+            BigInteger weiAmount = Nethereum.Web3.Web3.Convert.ToWei(ethAmount, UnitConversion.EthUnit.Ether);
 
-                var abiEncode = new ABIEncode();
+            var abiEncode = new ABIEncode();
+            
+            var encodedMessage =
+            abiEncode.GetSha3ABIEncodedPacked(
+                new ABIValue("address", Web3Unity.Instance.Address), new ABIValue("uint256",weiAmount));
                 
-                var encodedMessage =
-                abiEncode.GetSha3ABIEncodedPacked(
-                    new ABIValue("address", Web3Unity.Instance.Address), new ABIValue("uint256",weiAmount));
-                 
 
-                Debug.Log($"Private Key: {privateKey}");
-                Debug.Log($"Address: {Web3Unity.Instance.Address}");
+            //Debug.Log($"Private Key: {privateKey}");
+            //Debug.Log($"Address: {Web3Unity.Instance.Address}");
 
-              
+            
 
-                    
-                string message = "0x" + BitConverter.ToString(encodedMessage).Replace("-", "").ToLower();
-                var signer = new EthereumMessageSigner();
-                string signedMessage2 = signer.Sign(message.HexToByteArray(),new EthECKey(privateKey));
                 
-                Debug.Log($"messagehash: {message}");
-                Debug.Log($"Signed Message: {signedMessage2}");
-                var resultx = await simpleBank.WithdrawWithReceipt(weiAmount, signedMessage2.HexToByteArray());
-                Debug.Log("resultx "+ resultx.Status);
-                return;
+            string message = "0x" + BitConverter.ToString(encodedMessage).Replace("-", "").ToLower();
+            var signer = new EthereumMessageSigner();
+            string signedMessage2 = signer.Sign(message.HexToByteArray(),new EthECKey(privateKey));
+            
+            //Debug.Log($"messagehash: {message}");
+           // Debug.Log($"Signed Message: {signedMessage2}");
+            var resultx = await simpleBank.WithdrawWithReceipt(weiAmount, signedMessage2.HexToByteArray());
+            //Debug.Log("resultx "+ resultx.Status);
+            return;
 
 
         }

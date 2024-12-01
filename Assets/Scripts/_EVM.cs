@@ -61,7 +61,7 @@ public class _EVM : MonoBehaviour
             float wei = float.Parse(balance.ToString());
             float decimals = 1000000000000000000; // 18 decimals
             float eth = wei / decimals;
-            UIManager.Instance.BNBUI.text = eth.ToString();
+            UIManager.Instance.BNBUI.text = eth.ToString("0.00000");
             Debug.Log($"balance BNB {eth}");
 
         }
@@ -81,7 +81,7 @@ public class _EVM : MonoBehaviour
             float wei = float.Parse(balance.ToString());
             float decimals = 1000000000000000000; // 18 decimals
             float eth = wei / decimals;
-            UIManager.Instance.BNBUI.text = eth.ToString();
+            UIManager.Instance.BNBUI.text = eth.ToString("0.00000");
             Debug.Log($"balance BNB {eth}");
 
         }
@@ -134,7 +134,7 @@ public class _EVM : MonoBehaviour
 
 
         }
-        
+
         public void _GetBalances() =>GetBalances();
 
         public async void GetBalances()

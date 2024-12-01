@@ -4,7 +4,7 @@ using System.Numerics;
 using DG.Tweening;
 using UnityEngine;
 using UnityEngine.UI;
-
+using Newtonsoft.Json;
 public class GameManager : MonoBehaviour
 {
     public static GameManager Instance;
@@ -14,10 +14,18 @@ public class GameManager : MonoBehaviour
     public Transform MaskGameContainer;
     public GameObject StartGameGO;
     public GameObject MenuCenterBG;
+    public GameObject PrefabBomb;
+    public GameObject PrefabBNBUIText;
+    public List<GameObject>  ListEffectRush = new List<GameObject>();
+
+    public PlayerGameData _PlayerGameData;
+    public int TestAvailClicks = 200;
+    public float TestTotalBNBEarned;
     void Awake()
     {
         Instance = this;
     }
+    
     public void StartGame() => PlayFabManager.Instance.ExecuteWithSessionCheck( () => 
     {
         GameContainer.SetActive(true);
@@ -60,10 +68,14 @@ public class GameManager : MonoBehaviour
                 randomXStartPos = Random.Range(-987,-605);
                 yPosStarting = -48;
             }
-            rusher.GetComponent<Button>().onClick.AddListener(() => {rusher.transform.DOKill();Destroy(rusher);} );
-    
+            int rand = Random.Range(0,2);
+            if(rand == 1)
+            {
+                Rusher _rusher = rusher.GetComponent<Rusher>();
+                _rusher.Explode = true;
+            }
             rusher.transform.localPosition = new UnityEngine.Vector2(randomXStartPos,yPosStarting);
-            rusher.transform.DOLocalMoveX(targetXEndPos,Random.Range(2.5f,4.6f)).SetEase(Ease.Linear).OnComplete(() => {if(rusher!= null) Destroy(rusher);} );
+            rusher.transform.DOLocalMoveX(targetXEndPos,Random.Range(3f,4.6f)).SetEase(Ease.Linear).OnComplete(() => {if(rusher!= null) Destroy(rusher);} );
             yield return new WaitForSeconds(Random.Range(0.1f,1.2f));
         }
         

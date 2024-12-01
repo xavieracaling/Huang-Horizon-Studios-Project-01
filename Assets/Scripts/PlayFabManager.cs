@@ -12,6 +12,7 @@ public class PlayFabManager : MonoBehaviour
     public string LoginStateUpdatedSession;
     public string CustomUserIDAddress;
     public static PlayFabManager Instance;
+    
     void Awake()
     {
         Instance = this;

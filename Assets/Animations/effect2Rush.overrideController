@@ -1,0 +1,13 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!221 &22100000
+AnimatorOverrideController:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: effect2Rush
+  m_Controller: {fileID: 9100000, guid: 9aa9441ea02f09945ae9b2097fb5ca8d, type: 2}
+  m_Clips:
+  - m_OriginalClip: {fileID: 7400000, guid: fbe0b2253e9e94c4bad077bfab185fb6, type: 2}
+    m_OverrideClip: {fileID: 7400000, guid: 04c363e922fc0d945aecd7d1315c7d6b, type: 2}

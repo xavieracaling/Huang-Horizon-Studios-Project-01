@@ -9,6 +9,8 @@ public class UIManager : MonoBehaviour
     public Text AddressPlayerUI;
     public Text NamePlayerUI;
     public Text BNBUI;
+    public Text AvailableClicksUI;
+    public Text TotalBNBEarnedUI;
     public InputField NameUI;
     public GameObject NameContainerUI;
     public GameObject MainSceneConnectedUI;
@@ -24,6 +26,15 @@ public class UIManager : MonoBehaviour
     void Start()
     {
         
+    }
+    public void UpdateUIClicks(int availableClicks, float totalBNBEarnedUI )
+    {
+        if(availableClicks <= 0)
+            availableClicks = 0;
+        if(totalBNBEarnedUI <= 0)
+            totalBNBEarnedUI = 0;
+        AvailableClicksUI.text = $"AVAILABLE CLICKS:{availableClicks}";
+        TotalBNBEarnedUI.text = $"TOTAL BNB EARNED:{totalBNBEarnedUI.ToString("0.00000")} BNB";
     }
     public void ConnectedSceneUI()
     {

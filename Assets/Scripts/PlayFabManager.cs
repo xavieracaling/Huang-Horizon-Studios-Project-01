@@ -92,6 +92,13 @@ public class PlayFabManager : MonoBehaviour
         }
         else
         {
+            PlayFabClientAPI.GetUserData(new GetUserDataRequest(), result => {
+                if(result.Data.ContainsKey("PlayerGameData"))
+                {
+                    PlayerGameDataUnProtected playerGameDataProtected = JsonConvert.DeserializeObject<PlayerGameDataUnProtected>(result.Data["PlayerGameData"].Value);
+                    GameManager.Instance._PlayerGameDataProtected = playerGameDataProtected.ConvertToPlayerGameDataProtected();
+                }
+            },error => {Debug.Log("Error");});
             Debug.Log("Existing account logged in.");
             PlayerName = result.InfoResultPayload?.AccountInfo?.TitleInfo?.DisplayName;
             UIManager.Instance.ConnectedSceneUI();
@@ -128,6 +135,27 @@ public class PlayFabManager : MonoBehaviour
         _mult += GameManager.Instance._PlayerGameDataProtected.TotalReferralMultiplierPoints; 
         _mult = Mathf.Clamp(_mult,0,_max); 
         return _mult;
+    }
+    public void SavePlayerData()
+    {
+        PlayerGameDataUnProtected playerGameDataUnProtected = GameManager.Instance._PlayerGameDataProtected.ConvertToPlayerGameDataUnProtected();
+        string serial = JsonConvert.SerializeObject(playerGameDataUnProtected);
+        var request = new UpdateUserDataRequest
+        {
+            Data = new Dictionary<string, string>
+            {
+                { "PlayerGameData",  serial }
+            }
+        };
+
+        PlayFabClientAPI.UpdateUserData(request, result =>
+        {
+            Debug.Log($"Player GameData updated successfully. {LoginStateSession} ");
+        }, error =>
+        {
+            UIManager.Instance.InstantiateMessagerPopPrefab_Restart("Server error, please restart the game.");
+            Debug.LogError("Failed to update user data: " + error.GenerateErrorReport());
+        });
     }
     public void BoughtBoosterPack(BoosterPackProtected boosterPackProtected)
     {

@@ -37,7 +37,7 @@ public class Rusher : MonoBehaviour
                 Text uiBNBText = uiBNB.GetComponent<Text>();
                 uiBNBText.DOFade(0,1.5f).SetEase(Ease.Linear);
 
-                
+
                 float bnbEarned = playerBoosterPackProtected.BNBEarnPerClick;
                 uiBNBText.text = $"{bnbEarned.ToString("0.0000000")} BNB";
                 
@@ -52,7 +52,7 @@ public class Rusher : MonoBehaviour
                 Destroy(effect,0.15f);
             }
                 UIManager.Instance.UpdateUIClicks((int)playerBoosterPackProtected.AvailableClicks,(float)playerBoosterPackProtected.TotalBNBEarned );
-
+            PlayFabManager.Instance.SavePlayerData();
             transform.DOKill();
             Destroy(gameObject);
 

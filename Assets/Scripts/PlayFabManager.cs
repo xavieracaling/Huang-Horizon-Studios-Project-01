@@ -77,7 +77,7 @@ public class PlayFabManager : MonoBehaviour
                     { "PlayerGameData",  serial }
                 }
             };
-
+        
             PlayFabClientAPI.UpdateUserData(request, result =>
             {
                 GameManager.Instance._PlayerGameDataProtected = playerGameDataUnProtected.ConvertToPlayerGameDataProtected();
@@ -104,12 +104,37 @@ public class PlayFabManager : MonoBehaviour
         UIManager.Instance.DisconnectedSceneUI();
 
     }
+    float getMultiplier(string mult)
+    {
+        float _mult = 0;
+        float _max = 0;
+        switch(mult)
+        {
+            case "C": //2.0
+                _mult= 1.4f;
+                _max = 2.0f;
+            break;
+
+            case "B": //3x
+                _mult= 1.5f;
+                _max = 3.0f;
+            break;
+
+            case "A": //4x
+                _mult= 1.7f;
+                _max = 4.0f;
+            break;
+        }
+        _mult += GameManager.Instance._PlayerGameDataProtected.TotalReferralMultiplierPoints; 
+        _mult = Mathf.Clamp(_mult,0,_max); 
+        return _mult;
+    }
     public void BoughtBoosterPack(BoosterPackProtected boosterPackProtected)
     {
         PlayerBoosterPackUnProtected playerBoosterPackProtected = new PlayerBoosterPackUnProtected{
             ID = Random.Range(0,1000),
             DailyTimeExpire = 1,
-            CurrentMultiplier = 1.4f,
+            CurrentMultiplier = getMultiplier(boosterPackProtected.BoosterPacksTypes),
             BNBEarnPerClick = ((boosterPackProtected.Price * 1.4f) / 30) / 50,
             AvailableClicks = 50,
             TotalBNBEarned = 0,
@@ -200,6 +225,13 @@ public class PlayFabManager : MonoBehaviour
                             LoginSessionCheckStatus = "1";
                         }
 
+                   }
+                   else
+                   {
+                        Debug.Log("Session Login ID is still usable.");
+                        LoginSessionCheckStatus = "1";
+                        LoginStateUpdatedSession = "-1";
+                        Debug.Log("No user data found.");
                    }
                 }
                 else

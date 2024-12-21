@@ -1625,6 +1625,7 @@ MonoBehaviour:
   DescriptionUI: {fileID: 1557661703}
   TitleUI: {fileID: 445936160}
   PriceUI: {fileID: 1339660633}
+  MAXMultiplierUI: {fileID: 163811080}
   _BoosterPackProtected:
     ClickRate:
       Win:
@@ -1634,7 +1635,7 @@ MonoBehaviour:
     ImageIndex: 0
     Title: CLICK BOOSTER PACK C1
     Price:
-      fakeValue: 0.0026
+      fakeValue: 0.01
     BoosterPacksTypes:
       fakeValue: C
     FinalTimeExpire:
@@ -7818,7 +7819,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 959559548}
   m_HandleRect: {fileID: 959559547}
   m_Direction: 2
-  m_Value: 0
+  m_Value: 1
   m_Size: 1
   m_NumberOfSteps: 0
   m_OnValueChanged:
@@ -10207,7 +10208,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0.5}
   m_AnchorMax: {x: 1, y: 0.5}
-  m_AnchoredPosition: {x: -4.673767, y: -71.061}
+  m_AnchoredPosition: {x: -4.673828, y: -71.061}
   m_SizeDelta: {x: 480.868, y: 939.328}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1866669388

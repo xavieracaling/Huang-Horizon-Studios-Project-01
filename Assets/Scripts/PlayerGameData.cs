@@ -26,7 +26,7 @@ public class PlayerGameDataUnProtected
         List<PlayerBoosterPackProtected> ownedBoosterPacks = new List<PlayerBoosterPackProtected>();
         foreach (var item in OwnedBoosterPacks)
             ownedBoosterPacks.Add(item.GetReturnType(new PlayerBoosterPackProtected{}));
-       
+        
         return new PlayerGameDataProtected{
             TotalReferralMultiplierPoints = new ProtectedFloat(TotalReferralMultiplierPoints) ,
             OwnedBoosterPacks = ownedBoosterPacks,

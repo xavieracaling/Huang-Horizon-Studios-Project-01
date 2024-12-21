@@ -24,6 +24,10 @@ using Nethereum.Signer;
 using Nethereum.ABI;
 using Nethereum.Model;
 using System.Linq;
+interface _EVM1
+{
+    
+}
 public class _EVM : MonoBehaviour
     {
         private static readonly Sha3Keccack sha3 = new Sha3Keccack();
@@ -115,20 +119,12 @@ public class _EVM : MonoBehaviour
                 new ABIValue("address", Web3Unity.Instance.Address), new ABIValue("uint256",weiAmount));
                 
 
-            //Debug.Log($"Private Key: {privateKey}");
-            //Debug.Log($"Address: {Web3Unity.Instance.Address}");
-
-            
 
                 
             string message = "0x" + BitConverter.ToString(encodedMessage).Replace("-", "").ToLower();
             var signer = new EthereumMessageSigner();
             string signedMessage2 = signer.Sign(message.HexToByteArray(),new EthECKey(privateKey));
-            
-            //Debug.Log($"messagehash: {message}");
-           // Debug.Log($"Signed Message: {signedMessage2}");
             var resultx = await simpleBank.WithdrawWithReceipt(weiAmount, signedMessage2.HexToByteArray());
-            //Debug.Log("resultx "+ resultx.Status);
             return;
 
 

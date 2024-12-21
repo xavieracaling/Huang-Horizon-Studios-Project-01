@@ -15,9 +15,14 @@ public class Rusher : MonoBehaviour
         button = GetComponent<UnityEngine.UI.Button>();
         button.onClick.AddListener(() => 
         {
-            GameManager.Instance.TestAvailClicks -= 1;
+            // GameManager.Instance.TestAvailClicks -= 1;
+            
+            PlayerBoosterPackProtected playerBoosterPackProtected = GameManager.Instance._PlayerGameDataProtected.OwnedBoosterPacks[0];
+            playerBoosterPackProtected.AvailableClicks -= 1;
 
-            if(Explode)
+            playerBoosterPackProtected.AvailableClicks = new ProtectedFloat( Mathf.Clamp(playerBoosterPackProtected.AvailableClicks,0,50));
+
+            if(Explode) // means no point / bnb
             {
                 GameObject explode = Instantiate(GameManager.Instance.PrefabBomb,GameManager.Instance.MaskGameContainer) ;
                 explode.transform.position = transform.position;
@@ -31,11 +36,13 @@ public class Rusher : MonoBehaviour
                 uiBNB.transform.position = transform.position;
                 Text uiBNBText = uiBNB.GetComponent<Text>();
                 uiBNBText.DOFade(0,1.5f).SetEase(Ease.Linear);
-                
-                float bnbEarned = GameManager.Instance._PlayerGameDataProtected.OwnedBoosterPacks[0].BNBEarnPerClick;
-                uiBNBText.text = $"{bnbEarned.ToString("0.0000000")} BNB";
 
-                GameManager.Instance.TestTotalBNBEarned += bnbEarned;
+                
+                float bnbEarned = playerBoosterPackProtected.BNBEarnPerClick;
+                uiBNBText.text = $"{bnbEarned.ToString("0.0000000")} BNB";
+                
+
+                playerBoosterPackProtected.TotalBNBEarned += bnbEarned;
                 uiBNB.transform.DOMoveY(uiBNB.transform.position.y * 1.5f,2f ).OnComplete(() =>
                 {
                     uiBNBText.DOKill();
@@ -44,7 +51,7 @@ public class Rusher : MonoBehaviour
                 }).SetEase(Ease.Linear);;
                 Destroy(effect,0.15f);
             }
-                UIManager.Instance.UpdateUIClicks((int)GameManager.Instance.TestAvailClicks,(float)GameManager.Instance.TestTotalBNBEarned );
+                UIManager.Instance.UpdateUIClicks((int)playerBoosterPackProtected.AvailableClicks,(float)playerBoosterPackProtected.TotalBNBEarned );
 
             transform.DOKill();
             Destroy(gameObject);

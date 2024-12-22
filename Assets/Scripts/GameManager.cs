@@ -6,6 +6,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using Newtonsoft.Json;
 using GUPS.AntiCheat.Protected;
+using System;
 public class GameManager : MonoBehaviour
 {
     public static GameManager Instance;
@@ -22,18 +23,46 @@ public class GameManager : MonoBehaviour
     public PlayerGameDataProtected _PlayerGameDataProtected;
     public ProtectedInt64 TestAvailClicks = 50;
     public ProtectedFloat TestTotalBNBEarned;
+    public List<Action> ListOfOnSavePlayerData = new List<Action>();
+    public Coroutine ISavePlayerData;
+    public bool AbleToSavePlayerData;
     void Awake()
     {
-     
+        AbleToSavePlayerData = true;
         Instance = this;
     }
+    public void StartISavePlayerData()
+    {
+        if(ISavePlayerData != null)
+            StopCoroutine(ISavePlayerData);
+        ISavePlayerData = StartCoroutine(IESavePlayerData());
+    }
+    public void StopISavePlayerData()
+    {
+        if(ISavePlayerData != null)
+            StopCoroutine(ISavePlayerData);
+    }
     
+    IEnumerator IESavePlayerData()
+    {
+        while (true)
+        {
+            if(ListOfOnSavePlayerData.Count > 0 && AbleToSavePlayerData)
+            {
+                ListOfOnSavePlayerData[ListOfOnSavePlayerData.Count - 1]?.Invoke();
+                ListOfOnSavePlayerData.Remove(ListOfOnSavePlayerData[ListOfOnSavePlayerData.Count - 1]);
+                yield return new WaitForEndOfFrame();
+            }
+                yield return new WaitForSeconds(1.5f);
+
+        }
+    }
     public void StartGame() => PlayFabManager.Instance.ExecuteWithSessionCheck( () => 
     {
         GameContainer.SetActive(true);
         StartGameGO.SetActive(false);
         MenuCenterBG.SetActive(false);
-
+        StartISavePlayerData();
         StartCoroutine(StartSpawnRushers());
         Debug.Log("Game has started!");
     });
@@ -43,8 +72,8 @@ public class GameManager : MonoBehaviour
         while(true)
         {
             bool goingLeftChar = false;
-            int indexRand = Random.Range(0,2);
-            int indexRandLeft = Random.Range(0,2);
+            int indexRand =  UnityEngine.Random.Range(0,2);
+            int indexRandLeft =  UnityEngine.Random.Range(0,2);
             
             float randomXStartPos = 0;
             float targetXEndPos = 0;
@@ -57,7 +86,7 @@ public class GameManager : MonoBehaviour
             {
                 rusher = Instantiate(PrefabGoingLeftCharacter,MaskGameContainer);
                 targetXEndPos = -1120f;
-                randomXStartPos = Random.Range(524,924);
+                randomXStartPos = UnityEngine.Random.Range(524,924);
                 if(indexRandLeft == 0)
                     yPosStarting = 273;
                 else
@@ -67,18 +96,18 @@ public class GameManager : MonoBehaviour
             {
                 rusher = Instantiate(PrefabGoingRightCharacter,MaskGameContainer);
                 targetXEndPos = 1130f;
-                randomXStartPos = Random.Range(-987,-605);
+                randomXStartPos =  UnityEngine.Random.Range(-987,-605);
                 yPosStarting = -48;
             }
-            int rand = Random.Range(0,2);
+            int rand =  UnityEngine.Random.Range(0,2);
             if(rand == 1)
             {
                 Rusher _rusher = rusher.GetComponent<Rusher>();
                 _rusher.Explode = true;
             }
             rusher.transform.localPosition = new UnityEngine.Vector2(randomXStartPos,yPosStarting);
-            rusher.transform.DOLocalMoveX(targetXEndPos,Random.Range(3f,4.6f)).SetEase(Ease.Linear).OnComplete(() => {if(rusher!= null) Destroy(rusher);} );
-            yield return new WaitForSeconds(Random.Range(0.1f,1.2f));
+            rusher.transform.DOLocalMoveX(targetXEndPos, UnityEngine.Random.Range(3f,4.6f)).SetEase(Ease.Linear).OnComplete(() => {if(rusher!= null) Destroy(rusher);} );
+            yield return new WaitForSeconds( UnityEngine.Random.Range(0.1f,1.2f));
         }
         
     }

@@ -52,7 +52,8 @@ public class Rusher : MonoBehaviour
                 Destroy(effect,0.15f);
             }
                 UIManager.Instance.UpdateUIClicks((int)playerBoosterPackProtected.AvailableClicks,(float)playerBoosterPackProtected.TotalBNBEarned );
-            PlayFabManager.Instance.SavePlayerData();
+
+            GameManager.Instance.ListOfOnSavePlayerData.Add( () => PlayFabManager.Instance.SavePlayerData());
             transform.DOKill();
             Destroy(gameObject);
 

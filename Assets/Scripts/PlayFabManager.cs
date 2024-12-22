@@ -5,6 +5,7 @@ using PlayFab;
 using PlayFab.ClientModels;
 using System.Linq;
 using Newtonsoft.Json;
+using System;
 public class PlayFabManager : MonoBehaviour
 {
     public string LoginSessionCheckStatus;
@@ -13,7 +14,6 @@ public class PlayFabManager : MonoBehaviour
     public string LoginStateUpdatedSession;
     public string CustomUserIDAddress;
     public static PlayFabManager Instance;
-
     void Awake()
     {
         Instance = this;
@@ -138,6 +138,7 @@ public class PlayFabManager : MonoBehaviour
     }
     public void SavePlayerData()
     {
+        GameManager.Instance.AbleToSavePlayerData  = false;
         PlayerGameDataUnProtected playerGameDataUnProtected = GameManager.Instance._PlayerGameDataProtected.ConvertToPlayerGameDataUnProtected();
         string serial = JsonConvert.SerializeObject(playerGameDataUnProtected);
         var request = new UpdateUserDataRequest
@@ -151,8 +152,10 @@ public class PlayFabManager : MonoBehaviour
         PlayFabClientAPI.UpdateUserData(request, result =>
         {
             Debug.Log($"Player GameData updated successfully. {LoginStateSession} ");
+            GameManager.Instance.AbleToSavePlayerData = true;
         }, error =>
         {
+            GameManager.Instance.AbleToSavePlayerData = true;
             UIManager.Instance.InstantiateMessagerPopPrefab_Restart("Server error, please restart the game.");
             Debug.LogError("Failed to update user data: " + error.GenerateErrorReport());
         });
@@ -160,7 +163,7 @@ public class PlayFabManager : MonoBehaviour
     public void BoughtBoosterPack(BoosterPackProtected boosterPackProtected)
     {
         PlayerBoosterPackUnProtected playerBoosterPackProtected = new PlayerBoosterPackUnProtected{
-            ID = Random.Range(0,1000),
+            ID =  UnityEngine.Random.Range(0,1000),
             DailyTimeExpire = 1,
             CurrentMultiplier = getMultiplier(boosterPackProtected.BoosterPacksTypes),
             BNBEarnPerClick = ((boosterPackProtected.Price * 1.4f) / 30) / 50,
@@ -298,14 +301,14 @@ public class PlayFabManager : MonoBehaviour
             string newLoginID = LoginStateUpdatedSession;
             while(newLoginID == LoginStateUpdatedSession)
             {
-                newLoginID = Random.Range(0,10000).ToString();
+                newLoginID =  UnityEngine.Random.Range(0,10000).ToString();
                 yield return new WaitForEndOfFrame();
             }
             LoginStateSession = newLoginID;
         }
         else
         {
-            LoginStateSession = Random.Range(0,10000).ToString();
+            LoginStateSession =  UnityEngine.Random.Range(0,10000).ToString();
         }
 
         LoginStateUpdatedSession = LoginStateSession;

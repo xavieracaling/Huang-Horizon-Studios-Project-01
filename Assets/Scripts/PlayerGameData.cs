@@ -20,16 +20,16 @@ public class PlayerGameDataUnProtected
 {
     //referralMultiplierPoints
     public float TotalReferralMultiplierPoints;
-    public List<PlayerBoosterPackUnProtected> OwnedBoosterPacks = new List<PlayerBoosterPackUnProtected>();
+    public List<PlayerBoosterPackUnProtected> OwnedBoosterPacksUnProtected = new List<PlayerBoosterPackUnProtected>(); //list u own boosters
     public PlayerGameDataProtected ConvertToPlayerGameDataProtected()
     {
-        List<PlayerBoosterPackProtected> ownedBoosterPacks = new List<PlayerBoosterPackProtected>();
-        foreach (var item in OwnedBoosterPacks)
-            ownedBoosterPacks.Add(item.GetReturnType(new PlayerBoosterPackProtected{}));
+        List<PlayerBoosterPackProtected> ownedBoosterPacksProtected = new List<PlayerBoosterPackProtected>();
+        foreach (var item in OwnedBoosterPacksUnProtected)
+            ownedBoosterPacksProtected.Add(item.GetReturnType(new PlayerBoosterPackProtected{}));
         
         return new PlayerGameDataProtected{
             TotalReferralMultiplierPoints = new ProtectedFloat(TotalReferralMultiplierPoints) ,
-            OwnedBoosterPacks = ownedBoosterPacks,
+            OwnedBoosterPacks = ownedBoosterPacksProtected,
           
         } ;
     }
@@ -44,7 +44,7 @@ public class PlayerGameDataProtected
 {
     //referralMultiplierPoints
     public ProtectedFloat TotalReferralMultiplierPoints;
-    public List<PlayerBoosterPackProtected> OwnedBoosterPacks = new List<PlayerBoosterPackProtected>();
+    public List<PlayerBoosterPackProtected> OwnedBoosterPacks = new List<PlayerBoosterPackProtected>(); //list u own boosters
     public PlayerGameDataUnProtected ConvertToPlayerGameDataUnProtected()
     {
         List<PlayerBoosterPackUnProtected> ownedBoosterPacks = new List<PlayerBoosterPackUnProtected>();
@@ -53,7 +53,7 @@ public class PlayerGameDataProtected
     
         return new PlayerGameDataUnProtected{
             TotalReferralMultiplierPoints = (float) TotalReferralMultiplierPoints,
-            OwnedBoosterPacks = ownedBoosterPacks,
+            OwnedBoosterPacksUnProtected = ownedBoosterPacks,
             
         };
     }

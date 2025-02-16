@@ -62,11 +62,11 @@ public class PlayFabManager : MonoBehaviour
     {
         Debug.Log("Login successful!");
         Debug.Log("PlayFab ID: " + result.PlayFabId);
-        if (result.NewlyCreated)
+        if (result.NewlyCreated) // new created
         {
             Debug.Log($"New account created!");
             PlayerGameDataUnProtected playerGameDataUnProtected = new PlayerGameDataUnProtected{
-                OwnedBoosterPacks = new List<PlayerBoosterPackUnProtected>()
+                OwnedBoosterPacksUnProtected = new List<PlayerBoosterPackUnProtected>()
             };
 
             string serial = JsonConvert.SerializeObject(playerGameDataUnProtected);
@@ -136,10 +136,11 @@ public class PlayFabManager : MonoBehaviour
         _mult = Mathf.Clamp(_mult,0,_max); 
         return _mult;
     }
-    public void SavePlayerData()
+    public void SavePlayerBoosterPackData()
     {
         GameManager.Instance.AbleToSavePlayerData  = false;
         PlayerGameDataUnProtected playerGameDataUnProtected = GameManager.Instance._PlayerGameDataProtected.ConvertToPlayerGameDataUnProtected();
+        bool checkZeroAvailableClicks = GameManager.Instance.CurrentPlayerBoosterPackProtected.AvailableClicks <= 0; 
         string serial = JsonConvert.SerializeObject(playerGameDataUnProtected);
         var request = new UpdateUserDataRequest
         {
@@ -151,22 +152,64 @@ public class PlayFabManager : MonoBehaviour
 
         PlayFabClientAPI.UpdateUserData(request, result =>
         {
+            if(GameManager.Instance.CurrentPlayerBoosterPackProtected != null)
+            {
+                if(checkZeroAvailableClicks)
+                {
+                    GameManager.Instance.StopISavePlayerData();
+                }
+            }
             Debug.Log($"Player GameData updated successfully. {LoginStateSession} ");
             GameManager.Instance.AbleToSavePlayerData = true;
         }, error =>
         {
             GameManager.Instance.AbleToSavePlayerData = true;
-            UIManager.Instance.InstantiateMessagerPopPrefab_Restart("Server error, please restart the game.");
+            // UIManager.Instance.InstantiateMessagerPopPrefab_Restart("Server error, please restart the game.");
             Debug.LogError("Failed to update user data: " + error.GenerateErrorReport());
         });
     }
     public void BoughtBoosterPack(BoosterPackProtected boosterPackProtected)
     {
+        float currentMultiplier =getMultiplier(boosterPackProtected.BoosterPacksTypes);
+        int newID = 0;
+        bool containsID = false;
+        if(GameManager.Instance._PlayerGameDataProtected.OwnedBoosterPacks.Count > 0)
+        {
+            for (int i = 0; i < 1000; i++)
+            {
+                bool completed = false;
+                for (int x= 0; x < GameManager.Instance._PlayerGameDataProtected.OwnedBoosterPacks.Count; x++)
+                {
+                    int id = (int) GameManager.Instance._PlayerGameDataProtected.OwnedBoosterPacks[x].ID;
+                    if(id == i)
+                    {
+                        break;
+                    }
+                    if(id !=  i && x == GameManager.Instance._PlayerGameDataProtected.OwnedBoosterPacks.Count - 1)
+                    {   
+                        newID = i;
+                        completed = true;
+                    }
+                }
+                if(completed)
+                {   
+                    break;
+                }
+            }
+        }
+        else
+        {
+            newID =  0;
+        }
+        if(newID > 1000)
+        {
+            return;
+        }
         PlayerBoosterPackUnProtected playerBoosterPackProtected = new PlayerBoosterPackUnProtected{
-            ID =  UnityEngine.Random.Range(0,1000),
-            DailyTimeExpire = 1,
-            CurrentMultiplier = getMultiplier(boosterPackProtected.BoosterPacksTypes),
-            BNBEarnPerClick = ((boosterPackProtected.Price * 1.4f) / 30) / 50,
+            ID =  newID,
+            DailyTimeExpire = 24, // like 24 hours, resets all avail clicks
+            CurrentMultiplier = currentMultiplier,
+            BNBEarnPerClick = ((boosterPackProtected.Price * currentMultiplier) / 30) / 50, //30 = days , 50 =  times
             AvailableClicks = 50,
             TotalBNBEarned = 0,
 
@@ -176,13 +219,13 @@ public class PlayFabManager : MonoBehaviour
             } , 
             ImageIndex = boosterPackProtected.ImageIndex, 
             Title = boosterPackProtected.Title, 
-            Price = boosterPackProtected.Price, 
+            Price = (float) boosterPackProtected.Price, 
             BoosterPacksTypes = (string) boosterPackProtected.BoosterPacksTypes, 
             FinalTimeExpire = (int) boosterPackProtected.FinalTimeExpire, 
             OriginalMultiplier = (float) boosterPackProtected.OriginalMultiplier
         };
         PlayerGameDataUnProtected playerGameDataUnProtected = GameManager.Instance._PlayerGameDataProtected.ConvertToPlayerGameDataUnProtected();
-        playerGameDataUnProtected.OwnedBoosterPacks.Add(playerBoosterPackProtected);
+        playerGameDataUnProtected.OwnedBoosterPacksUnProtected.Add(playerBoosterPackProtected);
 
         GameManager.Instance._PlayerGameDataProtected = playerGameDataUnProtected.ConvertToPlayerGameDataProtected();
         string serial = JsonConvert.SerializeObject(playerGameDataUnProtected);

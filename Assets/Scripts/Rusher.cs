@@ -16,10 +16,9 @@ public class Rusher : MonoBehaviour
         button.onClick.AddListener(() => 
         {
             // GameManager.Instance.TestAvailClicks -= 1;
+            PlayerBoosterPackProtected playerBoosterPackProtected = GameManager.Instance.CurrentPlayerBoosterPackProtected;
+            GameManager.Instance.CurrentPlayerBoosterPackProtected.AvailableClicks -= 1;
             
-            PlayerBoosterPackProtected playerBoosterPackProtected = GameManager.Instance._PlayerGameDataProtected.OwnedBoosterPacks[0];
-            playerBoosterPackProtected.AvailableClicks -= 1;
-
             playerBoosterPackProtected.AvailableClicks = new ProtectedFloat( Mathf.Clamp(playerBoosterPackProtected.AvailableClicks,0,50));
 
             if(Explode) // means no point / bnb
@@ -40,7 +39,6 @@ public class Rusher : MonoBehaviour
 
                 float bnbEarned = playerBoosterPackProtected.BNBEarnPerClick;
                 uiBNBText.text = $"{bnbEarned.ToString("0.0000000")} BNB";
-                
 
                 playerBoosterPackProtected.TotalBNBEarned += bnbEarned;
                 uiBNB.transform.DOMoveY(uiBNB.transform.position.y * 1.5f,2f ).OnComplete(() =>
@@ -51,9 +49,10 @@ public class Rusher : MonoBehaviour
                 }).SetEase(Ease.Linear);;
                 Destroy(effect,0.15f);
             }
-                UIManager.Instance.UpdateUIClicks((int)playerBoosterPackProtected.AvailableClicks,(float)playerBoosterPackProtected.TotalBNBEarned );
 
-            GameManager.Instance.ListOfOnSavePlayerData.Add( () => PlayFabManager.Instance.SavePlayerData());
+            UIManager.Instance.UpdateUIClicks((int)playerBoosterPackProtected.AvailableClicks,(float)playerBoosterPackProtected.TotalBNBEarned );
+
+            GameManager.Instance.ListOfOnSavePlayerData.Add( () => PlayFabManager.Instance.SavePlayerBoosterPackData());
             transform.DOKill();
             Destroy(gameObject);
 

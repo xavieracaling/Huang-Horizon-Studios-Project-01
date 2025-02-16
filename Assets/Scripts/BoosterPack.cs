@@ -5,7 +5,7 @@ using System;
 using GUPS.AntiCheat.Protected;
 
 [Serializable]
-public class PlayerBoosterPackUnProtected : BoosterPackUnProtected
+public class PlayerBoosterPackUnProtected : BoosterPackUnProtected // player owned booster
 { 
     //id
     //duration 
@@ -32,7 +32,7 @@ public class PlayerBoosterPackUnProtected : BoosterPackUnProtected
 }
 [Serializable]
 
-public class BoosterPackUnProtected : BoosterProtect<BoosterPackProtected>
+public class BoosterPackUnProtected : BoosterProtect<BoosterPackProtected> //shop booster items etc.
 { 
     public ClickRateUnProtected ClickRate;
     public int ImageIndex;

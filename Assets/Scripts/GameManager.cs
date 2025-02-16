@@ -19,8 +19,10 @@ public class GameManager : MonoBehaviour
     public GameObject PrefabBomb;
     public GameObject PrefabBNBUIText;
     public List<GameObject>  ListEffectRush = new List<GameObject>();
+    [Header("GameDatasProtected")]
 
     public PlayerGameDataProtected _PlayerGameDataProtected;
+    public PlayerBoosterPackProtected CurrentPlayerBoosterPackProtected;
     public ProtectedInt64 TestAvailClicks = 50;
     public ProtectedFloat TestTotalBNBEarned;
     public List<Action> ListOfOnSavePlayerData = new List<Action>();
@@ -41,6 +43,7 @@ public class GameManager : MonoBehaviour
     {
         if(ISavePlayerData != null)
             StopCoroutine(ISavePlayerData);
+        ListOfOnSavePlayerData.Clear();
     }
     
     IEnumerator IESavePlayerData()
@@ -59,6 +62,7 @@ public class GameManager : MonoBehaviour
     }
     public void StartGame() => PlayFabManager.Instance.ExecuteWithSessionCheck( () => 
     {
+        CurrentPlayerBoosterPackProtected = _PlayerGameDataProtected.OwnedBoosterPacks[0]; 
         GameContainer.SetActive(true);
         StartGameGO.SetActive(false);
         MenuCenterBG.SetActive(false);
@@ -69,6 +73,9 @@ public class GameManager : MonoBehaviour
     
     public IEnumerator StartSpawnRushers()
     {
+        PlayerBoosterPackProtected playerBoosterPackProtected = GameManager.Instance.CurrentPlayerBoosterPackProtected;
+        UIManager.Instance.UpdateUIClicks((int)playerBoosterPackProtected.AvailableClicks,(float)playerBoosterPackProtected.TotalBNBEarned );
+
         while(true)
         {
             bool goingLeftChar = false;

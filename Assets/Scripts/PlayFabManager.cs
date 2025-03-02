@@ -42,6 +42,40 @@ public class PlayFabManager : MonoBehaviour
 
 
     }
+    public void CheckCurrentBoosterBeforeStart(PlayerBoosterPackProtected playerBoosterPackProtected)
+    {
+        bool foundID = false;
+        PlayFabClientAPI.GetUserData(new GetUserDataRequest(), result => 
+        {
+            if(result.Data.ContainsKey("PlayerGameData"))
+            {
+                PlayerGameDataUnProtected playerGameDataProtected = JsonConvert.DeserializeObject<PlayerGameDataUnProtected>(result.Data["PlayerGameData"].Value);
+                PlayerGameDataProtected data_playerBoosterPackProtected = playerGameDataProtected.ConvertToPlayerGameDataProtected();
+
+                foreach (var item in data_playerBoosterPackProtected.OwnedBoosterPacks)
+                {
+                        if(item.ID == playerBoosterPackProtected.ID)
+                        {
+                            foundID = true;
+                            break;
+                        }
+                }
+            }
+            if(foundID)
+            {
+                GameManager.Instance.FinalStartGame(playerBoosterPackProtected);
+            }
+            else
+            {
+                UIManager.Instance.InstantiateMessagerPopPrefab_Message("Error booster, please refresh the game.") ;
+                Debug.Log("Error!!");
+            }
+        },
+        error => {UIManager.Instance.InstantiateMessagerPopPrefab_Message("Error booster, please refresh the game.") ;});
+        BoosterManager.Instance.YourBoosterGO.SetActive(false);
+        
+   
+    }
     public void CustomLogin(string customID)
     {
         CustomUserIDAddress = customID;
@@ -140,7 +174,7 @@ public class PlayFabManager : MonoBehaviour
     {
         GameManager.Instance.AbleToSavePlayerData  = false;
         PlayerGameDataUnProtected playerGameDataUnProtected = GameManager.Instance._PlayerGameDataProtected.ConvertToPlayerGameDataUnProtected();
-        bool checkZeroAvailableClicks = GameManager.Instance.CurrentPlayerBoosterPackProtected.AvailableClicks <= 0; 
+        bool checkZeroAvailableClicks = GameManager.Instance.CurrentUsedPlayerBoosterPackProtected.AvailableClicks <= 0; 
         string serial = JsonConvert.SerializeObject(playerGameDataUnProtected);
         var request = new UpdateUserDataRequest
         {
@@ -152,7 +186,7 @@ public class PlayFabManager : MonoBehaviour
 
         PlayFabClientAPI.UpdateUserData(request, result =>
         {
-            if(GameManager.Instance.CurrentPlayerBoosterPackProtected != null)
+            if(GameManager.Instance.CurrentUsedPlayerBoosterPackProtected != null)
             {
                 if(checkZeroAvailableClicks)
                 {

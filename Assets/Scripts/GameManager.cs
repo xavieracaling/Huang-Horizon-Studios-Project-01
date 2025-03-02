@@ -19,10 +19,11 @@ public class GameManager : MonoBehaviour
     public GameObject PrefabBomb;
     public GameObject PrefabBNBUIText;
     public List<GameObject>  ListEffectRush = new List<GameObject>();
-    [Header("GameDatasProtected")]
+    [Header("Game Whole Data Protected")]
 
     public PlayerGameDataProtected _PlayerGameDataProtected;
-    public PlayerBoosterPackProtected CurrentPlayerBoosterPackProtected;
+    [Header("Current Used")]
+    public PlayerBoosterPackProtected CurrentUsedPlayerBoosterPackProtected;
     public ProtectedInt64 TestAvailClicks = 50;
     public ProtectedFloat TestTotalBNBEarned;
     public List<Action> ListOfOnSavePlayerData = new List<Action>();
@@ -62,18 +63,33 @@ public class GameManager : MonoBehaviour
     }
     public void StartGame() => PlayFabManager.Instance.ExecuteWithSessionCheck( () => 
     {
-        CurrentPlayerBoosterPackProtected = _PlayerGameDataProtected.OwnedBoosterPacks[0]; 
+        if(_PlayerGameDataProtected.OwnedBoosterPacks.Count > 0 )
+        {
+            Debug.Log($"_PlayerGameDataProtected.OwnedBoosterPacks.Count {_PlayerGameDataProtected.OwnedBoosterPacks.Count}");
+            BoosterManager.Instance.BoosterShow();
+        }
+        else
+        {
+            Debug.Log("No boosters!");
+            BoosterManager.Instance.NoBooster();
+        }
+        return;
+    });
+
+    public void FinalStartGame(PlayerBoosterPackProtected playerBoosterPackProtected)
+    {
+        CurrentUsedPlayerBoosterPackProtected = playerBoosterPackProtected;
         GameContainer.SetActive(true);
         StartGameGO.SetActive(false);
         MenuCenterBG.SetActive(false);
         StartISavePlayerData();
         StartCoroutine(StartSpawnRushers());
         Debug.Log("Game has started!");
-    });
+    }
     
     public IEnumerator StartSpawnRushers()
     {
-        PlayerBoosterPackProtected playerBoosterPackProtected = GameManager.Instance.CurrentPlayerBoosterPackProtected;
+        PlayerBoosterPackProtected playerBoosterPackProtected = GameManager.Instance.CurrentUsedPlayerBoosterPackProtected;
         UIManager.Instance.UpdateUIClicks((int)playerBoosterPackProtected.AvailableClicks,(float)playerBoosterPackProtected.TotalBNBEarned );
 
         while(true)

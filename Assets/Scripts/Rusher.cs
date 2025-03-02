@@ -16,8 +16,8 @@ public class Rusher : MonoBehaviour
         button.onClick.AddListener(() => 
         {
             // GameManager.Instance.TestAvailClicks -= 1;
-            PlayerBoosterPackProtected playerBoosterPackProtected = GameManager.Instance.CurrentPlayerBoosterPackProtected;
-            GameManager.Instance.CurrentPlayerBoosterPackProtected.AvailableClicks -= 1;
+            PlayerBoosterPackProtected playerBoosterPackProtected = GameManager.Instance.CurrentUsedPlayerBoosterPackProtected;
+            GameManager.Instance.CurrentUsedPlayerBoosterPackProtected.AvailableClicks -= 1;
             
             playerBoosterPackProtected.AvailableClicks = new ProtectedFloat( Mathf.Clamp(playerBoosterPackProtected.AvailableClicks,0,50));
 

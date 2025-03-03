@@ -103,13 +103,23 @@ public class _EVM : MonoBehaviour
             });
             action.Invoke();
             Debug.Log($"Deposited! {result.Status} ");
-
+            if (result.Status == new HexBigInteger(1))
+            {
+                UIManager.Instance.InstantiateMessagerPopPrefab_Message($"Bought booster success!!") ;
+            }
+            else
+            {
+                UIManager.Instance.InstantiateMessagerPopPrefab_Message($"Failed to buy booster.") ;
+            }
         }
         public void _Withdraw() => Withdraw() ;
 
-        public async void Withdraw()
+        public async void Withdraw(decimal _ethAmount = 0)
         {
-            decimal ethAmount = decimal.Parse(AmountUI.text); // Using decimal for better precision
+            GameObject loading = UIManager.Instance.LoadingShow();
+            loading.transform.SetAsLastSibling();
+
+            decimal ethAmount = AmountUI.text.Count() > 0 ? decimal.Parse(AmountUI.text) : _ethAmount; // Using decimal for better precision
             BigInteger weiAmount = Nethereum.Web3.Web3.Convert.ToWei(ethAmount, UnitConversion.EthUnit.Ether);
 
             var abiEncode = new ABIEncode();
@@ -118,16 +128,21 @@ public class _EVM : MonoBehaviour
             abiEncode.GetSha3ABIEncodedPacked(
                 new ABIValue("address", Web3Unity.Instance.Address), new ABIValue("uint256",weiAmount));
                 
-
-
-                
             string message = "0x" + BitConverter.ToString(encodedMessage).Replace("-", "").ToLower();
             var signer = new EthereumMessageSigner();
             string signedMessage2 = signer.Sign(message.HexToByteArray(),new EthECKey(privateKey));
             var resultx = await simpleBank.WithdrawWithReceipt(weiAmount, signedMessage2.HexToByteArray());
-            return;
-
-
+            Debug.Log($"result {resultx.Status}");
+            if (resultx.Status == new HexBigInteger(1))
+            {
+                UIManager.Instance.InstantiateMessagerPopPrefab_Message($"Success withdrawn worth {ethAmount} of BNB") ;
+                BoosterManager.Instance.BoosterShow();
+            }
+            else
+            {
+                UIManager.Instance.InstantiateMessagerPopPrefab_Message($"Failed to withdraw worth {ethAmount} BNB") ;
+            }
+            Destroy(loading);
         }
 
         public void _GetBalances() =>GetBalances();

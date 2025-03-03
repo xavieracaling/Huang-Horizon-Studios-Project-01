@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class BoosterManager : MonoBehaviour
@@ -24,6 +25,7 @@ public class BoosterManager : MonoBehaviour
         NOBoosterGO.SetActive(false);
         YourBoosterGO.SetActive(true);
         clearContentYourBooster();
+        GameManager.Instance._PlayerGameDataProtected.OwnedBoosterPacks = GameManager.Instance._PlayerGameDataProtected.OwnedBoosterPacks.OrderByDescending(w => (int) w.AvailableClicks).ToList();
         foreach (var item in GameManager.Instance._PlayerGameDataProtected.OwnedBoosterPacks)
         {
             GameObject booster = Instantiate(PrefabYourBooster,ContentYourBooster);

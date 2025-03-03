@@ -17,6 +17,7 @@ public class YourOwnedBooster : MonoBehaviour
     public Text ID;
     public PlayerBoosterPackProtected YourBooster;
     public Button UsePlay;
+    public Button Withdraw;
     
     public void InitializeBooster(PlayerBoosterPackProtected boosterPackProtected)
     {
@@ -26,14 +27,30 @@ public class YourOwnedBooster : MonoBehaviour
         ID.text = "ID: "+  boosterPackProtected.ID.ToString();
         BoosterTitle.text = boosterPackProtected.Title;
         float bnbEarned = boosterPackProtected.BNBEarnPerClick;
-        BNBPerClick.text = $"{bnbEarned.ToString("0.0000000")} BNB";
+        float bnbEarnedTotal = boosterPackProtected.TotalBNBEarned;
+        BNBPerClick.text = $"{bnbEarned.ToString("0.0000000")} ";
 
         AvailableClicks.text = $"{boosterPackProtected.AvailableClicks} LEFT";
         CurrentMultiplier.text = $"{boosterPackProtected.CurrentMultiplier}X ";
-        TotalBNBEarned.text = $"{boosterPackProtected.TotalBNBEarned} BNB";
+        TotalBNBEarned.text = $"{bnbEarnedTotal.ToString("0.0000000")} ";
         DailyResets.text = $"{boosterPackProtected.DailyTimeExpire} HRS";
         YourBooster = boosterPackProtected;
 
+        if (boosterPackProtected.TotalBNBEarned > 0)
+        {
+            Withdraw.interactable = true;
+            Withdraw.onClick.AddListener(() => 
+            {
+                decimal totalBNBEarned = (decimal)(float)boosterPackProtected.TotalBNBEarned;
+                Withdraw.interactable = false;
+                boosterPackProtected.TotalBNBEarned = 0;
+                PlayFabManager.Instance.SavePlayerBoosterPackData(() => _EVM.Instance.Withdraw(totalBNBEarned));
+            }  );
+        }
+        else
+        {
+            Withdraw.interactable = false;
+        }
         UsePlay.onClick.AddListener(() => PlayFabManager.Instance.CheckCurrentBoosterBeforeStart(boosterPackProtected));
 
     }

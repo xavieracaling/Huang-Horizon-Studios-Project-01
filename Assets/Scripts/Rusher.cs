@@ -49,11 +49,15 @@ public class Rusher : MonoBehaviour
                 }).SetEase(Ease.Linear);;
                 Destroy(effect,0.15f);
             }
-
+            
             UIManager.Instance.UpdateUIClicks((int)playerBoosterPackProtected.AvailableClicks,(float)playerBoosterPackProtected.TotalBNBEarned );
-
+           
             GameManager.Instance.ListOfOnSavePlayerData.Add( () => PlayFabManager.Instance.SavePlayerBoosterPackData());
             transform.DOKill();
+            if (playerBoosterPackProtected.AvailableClicks <= 0)
+            {
+                GameManager.Instance.CompletedBooster ();
+            }
             Destroy(gameObject);
 
         } );

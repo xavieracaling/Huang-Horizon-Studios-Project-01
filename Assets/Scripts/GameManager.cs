@@ -9,15 +9,17 @@ using GUPS.AntiCheat.Protected;
 using System;
 public class GameManager : MonoBehaviour
 {
+    public Coroutine IStartSpawnRushers;
     public static GameManager Instance;
     public GameObject PrefabGoingLeftCharacter;
     public GameObject PrefabGoingRightCharacter;
     public GameObject GameContainer;
     public Transform MaskGameContainer;
-    public GameObject StartGameGO;
+    public GameObject MainMenuGO;
     public GameObject MenuCenterBG;
     public GameObject PrefabBomb;
     public GameObject PrefabBNBUIText;
+    public List<GameObject>  ListAllRushes = new List<GameObject>();
     public List<GameObject>  ListEffectRush = new List<GameObject>();
     [Header("Game Whole Data Protected")]
 
@@ -80,13 +82,44 @@ public class GameManager : MonoBehaviour
     {
         CurrentUsedPlayerBoosterPackProtected = playerBoosterPackProtected;
         GameContainer.SetActive(true);
-        StartGameGO.SetActive(false);
+        MainMenuGO.SetActive(false);
         MenuCenterBG.SetActive(false);
         StartISavePlayerData();
-        StartCoroutine(StartSpawnRushers());
+        IStartSpawnRushers = StartCoroutine(StartSpawnRushers());
         Debug.Log("Game has started!");
     }
-    
+    public void GotoMenu()
+    {
+        gameStop();
+        StopISavePlayerData();
+        CurrentUsedPlayerBoosterPackProtected = null;
+        GameContainer.SetActive(false);
+        MainMenuGO.SetActive(true);
+        MenuCenterBG.SetActive(true);
+    }
+    public void CompletedBooster()
+    {
+        gameStop();
+        // StopISavePlayerData();
+        UIManager.Instance.InstantiateMessagerPopPrefabFull("Great job! No more available clicks, please check your booster.", () =>GotoMenu(),false );
+    }
+    void gameStop()
+    {
+        if (IStartSpawnRushers != null)
+        {
+            StopCoroutine(IStartSpawnRushers);
+            IStartSpawnRushers = null;
+        }
+        for (int i = ListAllRushes.Count - 1; i >= 0; i--)
+        {
+            if (ListAllRushes[i] != null)
+            {
+                Destroy(ListAllRushes[i]);
+            }
+            ListAllRushes.RemoveAt(i);
+        }
+        ListAllRushes.Clear();
+    }
     public IEnumerator StartSpawnRushers()
     {
         PlayerBoosterPackProtected playerBoosterPackProtected = GameManager.Instance.CurrentUsedPlayerBoosterPackProtected;
@@ -130,6 +163,7 @@ public class GameManager : MonoBehaviour
             }
             rusher.transform.localPosition = new UnityEngine.Vector2(randomXStartPos,yPosStarting);
             rusher.transform.DOLocalMoveX(targetXEndPos, UnityEngine.Random.Range(3f,4.6f)).SetEase(Ease.Linear).OnComplete(() => {if(rusher!= null) Destroy(rusher);} );
+            ListAllRushes.Add(rusher);
             yield return new WaitForSeconds( UnityEngine.Random.Range(0.1f,1.2f));
         }
         

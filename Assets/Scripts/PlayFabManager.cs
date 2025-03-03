@@ -45,6 +45,8 @@ public class PlayFabManager : MonoBehaviour
     public void CheckCurrentBoosterBeforeStart(PlayerBoosterPackProtected playerBoosterPackProtected)
     {
         bool foundID = false;
+        GameObject loading = UIManager.Instance.LoadingShow();
+        loading.transform.SetAsLastSibling();
         PlayFabClientAPI.GetUserData(new GetUserDataRequest(), result => 
         {
             if(result.Data.ContainsKey("PlayerGameData"))
@@ -63,16 +65,30 @@ public class PlayFabManager : MonoBehaviour
             }
             if(foundID)
             {
-                GameManager.Instance.FinalStartGame(playerBoosterPackProtected);
+                if (playerBoosterPackProtected.AvailableClicks <= 0)
+                {
+                    UIManager.Instance.InstantiateMessagerPopPrefab_Message("You don't have any available clicks, please wait for your booster's daily reset.") ;
+                }
+                else
+                {
+                    BoosterManager.Instance.YourBoosterGO.SetActive(false);
+                    GameManager.Instance.FinalStartGame(playerBoosterPackProtected);
+                }
+                Destroy(loading);
+
             }
             else
             {
                 UIManager.Instance.InstantiateMessagerPopPrefab_Message("Error booster, please refresh the game.") ;
+                BoosterManager.Instance.YourBoosterGO.SetActive(false);
                 Debug.Log("Error!!");
+                Destroy(loading);
             }
         },
-        error => {UIManager.Instance.InstantiateMessagerPopPrefab_Message("Error booster, please refresh the game.") ;});
-        BoosterManager.Instance.YourBoosterGO.SetActive(false);
+        error => {  UIManager.Instance.InstantiateMessagerPopPrefab_Message("Error booster, please refresh the game.") ;
+                    BoosterManager.Instance.YourBoosterGO.SetActive(false);
+                    Destroy(loading);});
+        
         
    
     }
@@ -170,11 +186,15 @@ public class PlayFabManager : MonoBehaviour
         _mult = Mathf.Clamp(_mult,0,_max); 
         return _mult;
     }
-    public void SavePlayerBoosterPackData()
+    public void SavePlayerBoosterPackData(Action action = null)
     {
         GameManager.Instance.AbleToSavePlayerData  = false;
         PlayerGameDataUnProtected playerGameDataUnProtected = GameManager.Instance._PlayerGameDataProtected.ConvertToPlayerGameDataUnProtected();
-        bool checkZeroAvailableClicks = GameManager.Instance.CurrentUsedPlayerBoosterPackProtected.AvailableClicks <= 0; 
+        bool checkZeroAvailableClicks = false; 
+        if (GameManager.Instance.CurrentUsedPlayerBoosterPackProtected != null)
+        {
+            checkZeroAvailableClicks = GameManager.Instance.CurrentUsedPlayerBoosterPackProtected.AvailableClicks <= 0; 
+        }
         string serial = JsonConvert.SerializeObject(playerGameDataUnProtected);
         var request = new UpdateUserDataRequest
         {
@@ -195,6 +215,10 @@ public class PlayFabManager : MonoBehaviour
             }
             Debug.Log($"Player GameData updated successfully. {LoginStateSession} ");
             GameManager.Instance.AbleToSavePlayerData = true;
+            if (action != null)
+            {
+                action?.Invoke();
+            }
         }, error =>
         {
             GameManager.Instance.AbleToSavePlayerData = true;

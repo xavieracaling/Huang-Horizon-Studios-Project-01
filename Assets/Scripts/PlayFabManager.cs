@@ -14,33 +14,18 @@ public class PlayFabManager : MonoBehaviour
     public string LoginStateUpdatedSession;
     public string CustomUserIDAddress;
     public static PlayFabManager Instance;
+    long targetT;
     void Awake()
     {
         Instance = this;
-        // PlayerBoosterPackProtected boosterPackProtected = new PlayerBoosterPackProtected{
-        //     ID = 9999,
-        //     DailyTimeExpire = 5464,
-        //     BNBEarnPerClick = 0.06f,
-        //     FinalTimeExpire = 89,
-        //     BoosterPacksTypes = BoosterPacksTypes.C.ToString(),
-        //     OriginalMultiplier = 5,
-        //     ClickRate =  new ClickRateProtected{
-        //         Win = 80,
-        //         Lose = 20,
-        //     }
-        // };
-        // GameManager.Instance._PlayerGameDataProtected = new PlayerGameDataProtected(){
-        //     OwnedBoosterPacks = new List<PlayerBoosterPackProtected>(){
-        //         boosterPackProtected
-        //     },
-
-        // };
-        // PlayerGameDataUnProtected playerGameDataUnProtected = GameManager.Instance._PlayerGameDataProtected.ConvertToPlayerGameDataUnProtected();
-        // string serPlayerGameDataUnProtected = JsonConvert.SerializeObject(playerGameDataUnProtected,Formatting.Indented);
-
-        // Debug.Log($"serPlayerGameDataUnProtected {serPlayerGameDataUnProtected} ");
-
-
+        targetT = (DateTimeOffset.UtcNow + TimeSpan.FromSeconds(15)).ToUnixTimeMilliseconds();;
+    }
+    void Update()
+    {
+        long epochTime = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
+        TimeSpan remainingTime = TimeSpan.FromMilliseconds(targetT - epochTime);
+        //Debug.Log("Epoch Time (Seconds): " +(remainingTime.Seconds)) ;
+        Debug.Log("Epoch Time (Seconds): " +(epochTime)) ;
     }
     public void CheckCurrentBoosterBeforeStart(PlayerBoosterPackProtected playerBoosterPackProtected)
     {
@@ -161,7 +146,7 @@ public class PlayFabManager : MonoBehaviour
         UIManager.Instance.DisconnectedSceneUI();
 
     }
-    float getMultiplier(string mult)
+    public float GetMultiplier(string mult)
     {
         float _mult = 0;
         float _max = 0;
@@ -185,6 +170,16 @@ public class PlayFabManager : MonoBehaviour
         _mult += GameManager.Instance._PlayerGameDataProtected.TotalReferralMultiplierPoints; 
         _mult = Mathf.Clamp(_mult,0,_max); 
         return _mult;
+    }
+    public void DeletePlayerBooster(PlayerBoosterPackProtected playerBoosterPackProtected, Action action= null)
+    {
+        if (GameManager.Instance._PlayerGameDataProtected.OwnedBoosterPacks.Contains(playerBoosterPackProtected))
+        {
+            GameObject loading = UIManager.Instance.LoadingShow();
+            loading.transform.SetAsLastSibling();
+            GameManager.Instance._PlayerGameDataProtected.OwnedBoosterPacks?.Remove(playerBoosterPackProtected);
+            SavePlayerBoosterPackData( () => {Destroy(loading) ; action?.Invoke();} );
+        }
     }
     public void SavePlayerBoosterPackData(Action action = null)
     {
@@ -210,6 +205,7 @@ public class PlayFabManager : MonoBehaviour
             {
                 if(checkZeroAvailableClicks)
                 {
+
                     GameManager.Instance.StopISavePlayerData();
                 }
             }
@@ -228,9 +224,11 @@ public class PlayFabManager : MonoBehaviour
     }
     public void BoughtBoosterPack(BoosterPackProtected boosterPackProtected)
     {
-        float currentMultiplier =getMultiplier(boosterPackProtected.BoosterPacksTypes);
+        float currentMultiplier =GetMultiplier(boosterPackProtected.BoosterPacksTypes);
         int newID = 0;
         bool containsID = false;
+
+        boosterPackProtected.TimeExpirationsProtected.ExpireTarget = (DateTimeOffset.UtcNow + TimeSpan.FromSeconds(800) ).ToUnixTimeMilliseconds();
         if(GameManager.Instance._PlayerGameDataProtected.OwnedBoosterPacks.Count > 0)
         {
             for (int i = 0; i < 1000; i++)
@@ -267,13 +265,17 @@ public class PlayFabManager : MonoBehaviour
             ID =  newID,
             DailyTimeExpire = 24, // like 24 hours, resets all avail clicks
             CurrentMultiplier = currentMultiplier,
-            BNBEarnPerClick = ((boosterPackProtected.Price * currentMultiplier) / 30) / 50, //30 = days , 50 =  times
+            BNBEarnPerClick = ((boosterPackProtected.Price * currentMultiplier) / 14) / 50, //14 = days , 50 =  times
             AvailableClicks = 50,
             TotalBNBEarned = 0,
-
+            
+            TimeExpirationsUnProtected = new TimeExpirationsUnProtected{
+                DailyResetTarget =  (Int64)boosterPackProtected.TimeExpirationsProtected.DailyResetTarget,
+                ExpireTarget =  (Int64)boosterPackProtected.TimeExpirationsProtected.ExpireTarget,
+            } ,
             ClickRate = new ClickRateUnProtected {
-                Win = boosterPackProtected.ClickRate.Win,
-                Lose = boosterPackProtected.ClickRate.Lose
+                Win = (float) boosterPackProtected.ClickRate.Win,
+                Lose =(float) boosterPackProtected.ClickRate.Lose
             } , 
             ImageIndex = boosterPackProtected.ImageIndex, 
             Title = boosterPackProtected.Title, 

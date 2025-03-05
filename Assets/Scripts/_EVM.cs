@@ -24,10 +24,7 @@ using Nethereum.Signer;
 using Nethereum.ABI;
 using Nethereum.Model;
 using System.Linq;
-interface _EVM1
-{
-    
-}
+
 public class _EVM : MonoBehaviour
     {
         private static readonly Sha3Keccack sha3 = new Sha3Keccack();

@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using GUPS.AntiCheat.Protected;
+using System;
 
 public static class BoosterPackConverter 
 {
@@ -56,6 +57,11 @@ public static class BoosterPackConverter
             AvailableClicks = (int) playerBoosterPackProtected.AvailableClicks,
             TotalBNBEarned = (float) playerBoosterPackProtected.TotalBNBEarned,
 
+            TimeExpirationsUnProtected = new TimeExpirationsUnProtected{
+                DailyResetTarget =  (Int64)playerBoosterPackProtected.TimeExpirationsProtected.DailyResetTarget,
+                ExpireTarget =  (Int64)playerBoosterPackProtected.TimeExpirationsProtected.ExpireTarget,
+            } ,
+
             ClickRate = new ClickRateUnProtected(){
                 Win = (float)playerBoosterPackProtected.ClickRate.Win,
                 Lose = (float)playerBoosterPackProtected.ClickRate.Lose,
@@ -79,6 +85,11 @@ public static class BoosterPackConverter
             BNBEarnPerClick = new ProtectedFloat(playerBoosterPackUnProtected.BNBEarnPerClick) ,
             AvailableClicks = new ProtectedInt64(playerBoosterPackUnProtected.AvailableClicks) ,
             TotalBNBEarned = new ProtectedFloat(playerBoosterPackUnProtected.TotalBNBEarned) ,
+
+            TimeExpirationsProtected = new TimeExpirationsProtected{
+                DailyResetTarget = new ProtectedInt64 (playerBoosterPackUnProtected.TimeExpirationsUnProtected.DailyResetTarget),
+                ExpireTarget = new ProtectedInt64 (playerBoosterPackUnProtected.TimeExpirationsUnProtected.ExpireTarget),
+            } ,
             
             ClickRate = new ClickRateProtected(){
                 Win = new ProtectedFloat(playerBoosterPackUnProtected.ClickRate.Win),

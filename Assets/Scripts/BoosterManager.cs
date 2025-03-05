@@ -25,7 +25,7 @@ public class BoosterManager : MonoBehaviour
         NOBoosterGO.SetActive(false);
         YourBoosterGO.SetActive(true);
         clearContentYourBooster();
-        GameManager.Instance._PlayerGameDataProtected.OwnedBoosterPacks = GameManager.Instance._PlayerGameDataProtected.OwnedBoosterPacks.OrderByDescending(w => (int) w.AvailableClicks).ToList();
+        GameManager.Instance._PlayerGameDataProtected.OwnedBoosterPacks = GameManager.Instance._PlayerGameDataProtected.OwnedBoosterPacks.OrderByDescending(w => (int) w.AvailableClicks ).ToList();
         foreach (var item in GameManager.Instance._PlayerGameDataProtected.OwnedBoosterPacks)
         {
             GameObject booster = Instantiate(PrefabYourBooster,ContentYourBooster);

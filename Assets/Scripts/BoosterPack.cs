@@ -21,6 +21,7 @@ public class PlayerBoosterPackUnProtected : BoosterPackUnProtected // player own
     public float BNBEarnPerClick;
     public int AvailableClicks;
     public float TotalBNBEarned;
+
     public PlayerBoosterPackProtected GetReturnType(PlayerBoosterPackProtected boosterPackProtected) //convert to PlayerBoosterPackProtected
     {
         return BoosterPackConverter.ConvertToPlayerBoosterPackProtected(this);
@@ -34,6 +35,7 @@ public class PlayerBoosterPackUnProtected : BoosterPackUnProtected // player own
 
 public class BoosterPackUnProtected : BoosterProtect<BoosterPackProtected> //shop booster items etc.
 { 
+    public TimeExpirationsUnProtected TimeExpirationsUnProtected;
     public ClickRateUnProtected ClickRate;
     public int ImageIndex;
     public string Title;

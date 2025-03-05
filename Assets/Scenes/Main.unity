@@ -1831,7 +1831,7 @@ MonoBehaviour:
     BoosterPacksTypes:
       fakeValue: C
     FinalTimeExpire:
-      fakeValue: 30
+      fakeValue: 14
     OriginalMultiplier:
       fakeValue: 2
 --- !u!1 &390206638

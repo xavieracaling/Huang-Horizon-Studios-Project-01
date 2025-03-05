@@ -34,6 +34,7 @@ public class PlayerBoosterPackProtected  : BoosterPackProtected
 
 public class BoosterPackProtected : BoosterProtect<BoosterPackUnProtected>
 { 
+    public TimeExpirationsProtected TimeExpirationsProtected;
     public ClickRateProtected ClickRate;
     public int ImageIndex;
     public string Title;

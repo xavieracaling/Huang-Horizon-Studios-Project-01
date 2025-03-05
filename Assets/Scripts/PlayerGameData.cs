@@ -4,6 +4,18 @@ using UnityEngine;
 using System;
 using GUPS.AntiCheat.Protected;
 [Serializable]
+public class TimeExpirationsUnProtected
+{
+    public Int64 DailyResetTarget;
+    public Int64 ExpireTarget;
+}
+[Serializable]
+public class TimeExpirationsProtected
+{
+    public ProtectedInt64 DailyResetTarget;
+    public ProtectedInt64 ExpireTarget;
+}
+[Serializable]
 public class ClickRateUnProtected
 {
     public float Win;

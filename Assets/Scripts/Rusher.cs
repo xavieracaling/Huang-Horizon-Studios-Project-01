@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using DG.Tweening;
+using System;
+
 using UnityEngine.UIElements;
 using Unity.VisualScripting;
 using GUPS.AntiCheat.Protected;
@@ -29,7 +31,7 @@ public class Rusher : MonoBehaviour
             }
             else
             {
-                GameObject effect = Instantiate( GameManager.Instance.ListEffectRush[Random.Range(0,GameManager.Instance.ListEffectRush.Count)],GameManager.Instance.MaskGameContainer) ;
+                GameObject effect = Instantiate( GameManager.Instance.ListEffectRush[UnityEngine.Random.Range(0,GameManager.Instance.ListEffectRush.Count)],GameManager.Instance.MaskGameContainer) ;
                 GameObject uiBNB = Instantiate( GameManager.Instance.PrefabBNBUIText,GameManager.Instance.MaskGameContainer.parent) ;
                 effect.transform.position = transform.position;
                 uiBNB.transform.position = transform.position;
@@ -51,7 +53,11 @@ public class Rusher : MonoBehaviour
             }
             
             UIManager.Instance.UpdateUIClicks((int)playerBoosterPackProtected.AvailableClicks,(float)playerBoosterPackProtected.TotalBNBEarned );
-           
+            if (playerBoosterPackProtected.AvailableClicks <= 0)
+            {
+               GameManager.Instance.CurrentUsedPlayerBoosterPackProtected.TimeExpirationsProtected.DailyResetTarget = (DateTimeOffset.UtcNow + TimeSpan.FromSeconds(25) ).ToUnixTimeMilliseconds();
+            }
+
             GameManager.Instance.ListOfOnSavePlayerData.Add( () => PlayFabManager.Instance.SavePlayerBoosterPackData());
             transform.DOKill();
             if (playerBoosterPackProtected.AvailableClicks <= 0)

@@ -18,14 +18,14 @@ public class PlayFabManager : MonoBehaviour
     void Awake()
     {
         Instance = this;
-        targetT = (DateTimeOffset.UtcNow + TimeSpan.FromSeconds(15)).ToUnixTimeMilliseconds();;
+       // targetT = (DateTimeOffset.UtcNow + TimeSpan.FromSeconds(15)).ToUnixTimeMilliseconds();;
     }
     void Update()
     {
-        long epochTime = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
-        TimeSpan remainingTime = TimeSpan.FromMilliseconds(targetT - epochTime);
-        //Debug.Log("Epoch Time (Seconds): " +(remainingTime.Seconds)) ;
-        Debug.Log("Epoch Time (Seconds): " +(epochTime)) ;
+        // long epochTime = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
+        // TimeSpan remainingTime = TimeSpan.FromMilliseconds(targetT - epochTime);
+        // //Debug.Log("Epoch Time (Seconds): " +(remainingTime.Seconds)) ;
+        // Debug.Log("Epoch Time (Seconds): " +(epochTime)) ;
     }
     public void CheckCurrentBoosterBeforeStart(PlayerBoosterPackProtected playerBoosterPackProtected)
     {

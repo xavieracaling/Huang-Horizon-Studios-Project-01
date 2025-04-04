@@ -26,8 +26,6 @@ public class GameManager : MonoBehaviour
     public PlayerGameDataProtected _PlayerGameDataProtected;
     [Header("Current Used")]
     public PlayerBoosterPackProtected CurrentUsedPlayerBoosterPackProtected;
-    public ProtectedInt64 TestAvailClicks = 50;
-    public ProtectedFloat TestTotalBNBEarned;
     public List<Action> ListOfOnSavePlayerData = new List<Action>();
     public Coroutine ISavePlayerData;
     public bool AbleToSavePlayerData;

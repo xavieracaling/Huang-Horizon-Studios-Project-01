@@ -4,6 +4,29 @@ using UnityEngine;
 using System;
 using GUPS.AntiCheat.Protected;
 [Serializable]
+public class PlayerInfo
+{
+    public int Level;
+    public int Experience;
+    public int RequiredExperience;
+}
+[Serializable]
+
+public class TapTicketsInfo
+{
+    public int NewReferralTapTickets;
+    public int CurrentTapTickets;
+}
+[Serializable]
+public class PlayerReferral
+{
+    public int TotalReferrals;              // Change to int for count
+    public float TotalReferralMultiplier;   // Change to float for multiplier
+    public int TotalFirstReferrals;         // Change to int for count
+    public int TotalSecondReferrals;        // Change to int for count
+    public int TotalThirdReferrals;
+}
+[Serializable]
 public class TimeExpirationsUnProtected
 {
     public Int64 DailyResetTarget;

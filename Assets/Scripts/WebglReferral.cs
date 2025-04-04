@@ -5,12 +5,22 @@ using UnityEngine.UI;
 
 public class WebglReferral : MonoBehaviour
 {
-    public string ReferralID { get; private set; }
+    public string ReferralID ;
     public Text TestRefferal;
+    public static WebglReferral Instance;
+    public string ReferralTest;
+    void Awake()
+    {
+        Instance = this;
+    }
     void Start()
     {
+        if (ReferralTest != "")
+        {
+            return;
+        }
         Debug.Log("start url!!: ");
-
+        ReferralID = "";
 #if UNITY_WEBGL && !UNITY_EDITOR
         string url = Application.absoluteURL;
         Debug.Log("URL: " + url);
@@ -33,8 +43,10 @@ public class WebglReferral : MonoBehaviour
 #endif
     }
 
-    private string GetQueryParam(string url, string key)
+        private string GetQueryParam(string url, string key)
+        
     {
+        
         int index = url.IndexOf("?");
         if (index >= 0)
         {

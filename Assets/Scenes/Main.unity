@@ -354,7 +354,7 @@ MonoBehaviour:
     FinalTimeExpire:
       fakeValue: 55
     OriginalMultiplier:
-      fakeValue: 2
+      fakeValue: 3
 --- !u!114 &9112626
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4910,6 +4910,12 @@ MonoBehaviour:
   LoginStateSession: 
   LoginStateUpdatedSession: 
   CustomUserIDAddress: 
+  _PlayerReferral:
+    TotalReferrals: 0
+    TotalReferralMultiplier: 0
+    TotalFirstReferrals: 0
+    TotalSecondReferrals: 0
+  ReferredBy: 
 --- !u!1 &454026942
 GameObject:
   m_ObjectHideFlags: 0
@@ -7860,7 +7866,7 @@ MonoBehaviour:
     FinalTimeExpire:
       fakeValue: 28
     OriginalMultiplier:
-      fakeValue: 2
+      fakeValue: 2.5
 --- !u!114 &716497838
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -8019,7 +8025,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 625586952bc64774882e4d774fe916ee, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  ReferralID: 
   TestRefferal: {fileID: 1685575886}
+  ReferralTest: 
 --- !u!1 &729086470
 GameObject:
   m_ObjectHideFlags: 0
@@ -8713,7 +8721,7 @@ MonoBehaviour:
     FinalTimeExpire:
       fakeValue: 55
     OriginalMultiplier:
-      fakeValue: 2
+      fakeValue: 3
 --- !u!114 &781852897
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -10540,7 +10548,7 @@ MonoBehaviour:
     FinalTimeExpire:
       fakeValue: 55
     OriginalMultiplier:
-      fakeValue: 2
+      fakeValue: 3
 --- !u!114 &922322823
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -11406,7 +11414,7 @@ MonoBehaviour:
     FinalTimeExpire:
       fakeValue: 28
     OriginalMultiplier:
-      fakeValue: 2
+      fakeValue: 2.5
 --- !u!114 &1004796798
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -13723,7 +13731,7 @@ MonoBehaviour:
     FinalTimeExpire:
       fakeValue: 28
     OriginalMultiplier:
-      fakeValue: 2
+      fakeValue: 2.5
 --- !u!114 &1164991008
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -18054,7 +18062,7 @@ MonoBehaviour:
     FinalTimeExpire:
       fakeValue: 28
     OriginalMultiplier:
-      fakeValue: 2
+      fakeValue: 2.5
 --- !u!114 &1474563623
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -20693,7 +20701,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
   m_Color: {r: 0, g: 0, b: 0, a: 1}
-  m_RaycastTarget: 1
+  m_RaycastTarget: 0
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
@@ -20708,7 +20716,7 @@ MonoBehaviour:
     m_MaxSize: 91
     m_Alignment: 4
     m_AlignByGeometry: 0
-    m_RichText: 1
+    m_RichText: 0
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
@@ -21075,7 +21083,7 @@ MonoBehaviour:
     FinalTimeExpire:
       fakeValue: 55
     OriginalMultiplier:
-      fakeValue: 2
+      fakeValue: 3
 --- !u!114 &1742256654
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -21945,7 +21953,7 @@ MonoBehaviour:
     FinalTimeExpire:
       fakeValue: 28
     OriginalMultiplier:
-      fakeValue: 2
+      fakeValue: 2.5
 --- !u!114 &1797776555
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -25548,7 +25556,7 @@ MonoBehaviour:
     FinalTimeExpire:
       fakeValue: 55
     OriginalMultiplier:
-      fakeValue: 2
+      fakeValue: 3
 --- !u!114 &2084076252
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -99,12 +99,14 @@ public class YourOwnedBooster : MonoBehaviour
         BNBPerClick.text = $"{bnbEarned.ToString("0.0000000")} ";
 
         AvailableClicks.text = $"{boosterPackProtected.AvailableClicks} LEFT";
-        CurrentMultiplier.text = $"{boosterPackProtected.CurrentMultiplier}X ";
+        float _currentMultiplier = (float)boosterPackProtected.CurrentMultiplier;
+        CurrentMultiplier.text = $"{_currentMultiplier.ToString("0.000")}X ";
         TotalBNBEarned.text = $"{bnbEarnedTotal.ToString("0.0000000")} ";
         DailyResets.text = $"{boosterPackProtected.DailyTimeExpire} HRS";
         YourBooster = boosterPackProtected;
         decimal totalBNBEarned = (decimal)(float)boosterPackProtected.TotalBNBEarned;
         decimal minBNBWithdraw = (decimal)(float)boosterPackProtected.Price * (decimal) PlayFabManager.Instance.GetMultiplier(boosterPackProtected.BoosterPacksTypes) * (decimal)0.04;
+        
 
 
         if (totalBNBEarned >= minBNBWithdraw)

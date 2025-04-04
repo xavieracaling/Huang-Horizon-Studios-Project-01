@@ -6,6 +6,7 @@ using PlayFab.ClientModels;
 using System.Linq;
 using Newtonsoft.Json;
 using System;
+using System.Runtime.Remoting.Contexts;
 public class PlayFabManager : MonoBehaviour
 {
     public string LoginSessionCheckStatus;
@@ -14,7 +15,12 @@ public class PlayFabManager : MonoBehaviour
     public string LoginStateUpdatedSession;
     public string CustomUserIDAddress;
     public static PlayFabManager Instance;
+    public string PlayFabID {get; private set;}
+    public PlayerReferral _PlayerReferral;
+    public TapTicketsInfo _TapTicketsInfo;
+
     long targetT;
+    public string ReferredBy;
     void Awake()
     {
         Instance = this;
@@ -92,10 +98,56 @@ public class PlayFabManager : MonoBehaviour
 
         PlayFabClientAPI.LoginWithCustomID(request, onLoginSuccess, onLoginFailure);
     }
+    [ContextMenu("TestServerPlayfab")]
+    public void TestServerPlayfab()
+    {
+        var request = new ExecuteCloudScriptRequest
+        {
+            FunctionName = "test",
+            FunctionParameter = new {
+                testText = "fuckk"
+            }
 
+        };
+        PlayFabClientAPI.ExecuteCloudScript(request,testServerPlayfabSuccess, testServerPlayfabError);
+    }
+    void testServerPlayfabSuccess(ExecuteCloudScriptResult executeCloudScriptResult)
+    {
+        Debug.Log(executeCloudScriptResult.FunctionResult.ToString());
+
+    }
+    void testServerPlayfabError(PlayFabError error)
+    {
+        Debug.Log("ERROR");
+    }
+    [ContextMenu("SendReferral")]
+
+    public void SendReferral()
+    {
+        Debug.Log($"WebglReferral.Instance.ReferralTest {WebglReferral.Instance.ReferralTest}");
+        string h = WebglReferral.Instance.ReferralTest;
+        var request = new ExecuteCloudScriptRequest
+        {
+            FunctionName = "addReferral",
+            FunctionParameter = new { 
+                referringPlayerIds = h ,
+                 playerId = PlayFabSettings.staticPlayer.PlayFabId 
+                 },
+            GeneratePlayStreamEvent = true
+        };
+        
+        PlayFabClientAPI.ExecuteCloudScript(request, result =>
+        {
+            Debug.Log("Referral added: " + result.FunctionResult.ToString());
+        }, error =>
+        {
+            Debug.LogError("Error adding referral: " + error.GenerateErrorReport());
+        });
+    }
     void onLoginSuccess(LoginResult result)
     {
         Debug.Log("Login successful!");
+        PlayFabID = result.PlayFabId;
         Debug.Log("PlayFab ID: " + result.PlayFabId);
         if (result.NewlyCreated) // new created
         {
@@ -105,11 +157,29 @@ public class PlayFabManager : MonoBehaviour
             };
 
             string serial = JsonConvert.SerializeObject(playerGameDataUnProtected);
+            _PlayerReferral =   new PlayerReferral{
+                TotalReferrals = 0,
+                TotalReferralMultiplier = 0,
+                TotalFirstReferrals = 0,
+                TotalSecondReferrals = 0,
+                TotalThirdReferrals = 0
+            };
+
+            _TapTicketsInfo = new TapTicketsInfo{
+                NewReferralTapTickets = 0,
+                CurrentTapTickets = 0
+            } ;
+            string serial_PlayerReferral = JsonConvert.SerializeObject(_PlayerReferral);
+            string serial_TapTicketsInfo = JsonConvert.SerializeObject(_TapTicketsInfo);
+
             var request = new UpdateUserDataRequest
             {
                 Data = new Dictionary<string, string>
                 {
-                    { "PlayerGameData",  serial }
+                    { "PlayerGameData",  serial },
+                    { "PlayerReferral",  serial_PlayerReferral },
+                    { "TapTicketsInfo",  serial_TapTicketsInfo },
+                    { "ReferredBy",  "" },
                 }
             };
         
@@ -117,10 +187,14 @@ public class PlayFabManager : MonoBehaviour
             {
                 GameManager.Instance._PlayerGameDataProtected = playerGameDataUnProtected.ConvertToPlayerGameDataProtected();
                 Debug.Log($"Player GameData updated successfully. {LoginStateSession} ");
+
+               
+                
             }, error =>
             {
                 UIManager.Instance.InstantiateMessagerPopPrefab_Restart("Server error, please restart the game.");
                 Debug.LogError("Failed to update user data: " + error.GenerateErrorReport());
+                return;
             });
             
             UIManager.Instance.NameContainerUI.SetActive(true);
@@ -128,12 +202,29 @@ public class PlayFabManager : MonoBehaviour
         else
         {
             PlayFabClientAPI.GetUserData(new GetUserDataRequest(), result => {
-                if(result.Data.ContainsKey("PlayerGameData"))
+                try
                 {
-                    PlayerGameDataUnProtected playerGameDataProtected = JsonConvert.DeserializeObject<PlayerGameDataUnProtected>(result.Data["PlayerGameData"].Value);
-                    GameManager.Instance._PlayerGameDataProtected = playerGameDataProtected.ConvertToPlayerGameDataProtected();
+                    
+                  
+                    if(result.Data.ContainsKey("PlayerGameData"))
+                    {
+                        PlayerGameDataUnProtected playerGameDataProtected = JsonConvert.DeserializeObject<PlayerGameDataUnProtected>(result.Data["PlayerGameData"].Value);
+                        GameManager.Instance._PlayerGameDataProtected = playerGameDataProtected.ConvertToPlayerGameDataProtected();
+                    }
+                    _PlayerReferral = JsonConvert.DeserializeObject<PlayerReferral>(result.Data["PlayerReferral"].Value);
+                    if (_PlayerReferral.TotalFirstReferrals > 0 && GameManager.Instance._PlayerGameDataProtected.OwnedBoosterPacks.Count > 0)
+                    {
+                        RefreshReferrals();
+                    }
                 }
-            },error => {Debug.Log("Error");});
+                catch (System.Exception)
+                {
+                    UIManager.Instance.InstantiateMessagerPopPrefab_Restart("Server error, please restart the game.");
+                    return;
+                }
+                
+            },error => {UIManager.Instance.InstantiateMessagerPopPrefab_Restart("Server error, please restart the game."); return;});
+
             Debug.Log("Existing account logged in.");
             PlayerName = result.InfoResultPayload?.AccountInfo?.TitleInfo?.DisplayName;
             UIManager.Instance.ConnectedSceneUI();
@@ -157,17 +248,17 @@ public class PlayFabManager : MonoBehaviour
                 _max = 2.0f;
             break;
 
-            case "B": //3x
+            case "B": //2.5
                 _mult= 1.5f;
-                _max = 3.0f;
+                _max = 2.5f;
             break;
 
-            case "A": //4x
+            case "A": //3
                 _mult= 1.7f;
-                _max = 4.0f;
+                _max = 3.5f;
             break;
         }
-        _mult += GameManager.Instance._PlayerGameDataProtected.TotalReferralMultiplierPoints; 
+        _mult +=  _PlayerReferral.TotalReferralMultiplier; 
         _mult = Mathf.Clamp(_mult,0,_max); 
         return _mult;
     }
@@ -224,11 +315,10 @@ public class PlayFabManager : MonoBehaviour
     }
     public void BoughtBoosterPack(BoosterPackProtected boosterPackProtected)
     {
-        float currentMultiplier =GetMultiplier(boosterPackProtected.BoosterPacksTypes);
         int newID = 0;
         bool containsID = false;
 
-        boosterPackProtected.TimeExpirationsProtected.ExpireTarget = (DateTimeOffset.UtcNow + TimeSpan.FromSeconds(800) ).ToUnixTimeMilliseconds();
+        boosterPackProtected.TimeExpirationsProtected.ExpireTarget = (DateTimeOffset.UtcNow + TimeSpan.FromHours(2) ).ToUnixTimeMilliseconds();
         if(GameManager.Instance._PlayerGameDataProtected.OwnedBoosterPacks.Count > 0)
         {
             for (int i = 0; i < 1000; i++)
@@ -261,6 +351,7 @@ public class PlayFabManager : MonoBehaviour
         {
             return;
         }
+        float currentMultiplier =GetMultiplier(boosterPackProtected.BoosterPacksTypes);
         PlayerBoosterPackUnProtected playerBoosterPackProtected = new PlayerBoosterPackUnProtected{
             ID =  newID,
             DailyTimeExpire = 24, // like 24 hours, resets all avail clicks
@@ -297,6 +388,35 @@ public class PlayFabManager : MonoBehaviour
             }
         };
 
+        PlayFabClientAPI.UpdateUserData(request, result =>
+        {
+            Debug.Log($"Player GameData updated successfully. {LoginStateSession} ");
+        }, error =>
+        {
+            UIManager.Instance.InstantiateMessagerPopPrefab_Restart("Server error, please restart the game.");
+            Debug.LogError("Failed to update user data: " + error.GenerateErrorReport());
+        });
+    }
+
+    public void RefreshReferrals()
+    {
+        PlayerGameDataUnProtected playerGameDataUnProtected = GameManager.Instance._PlayerGameDataProtected.ConvertToPlayerGameDataUnProtected();
+        foreach (var item in playerGameDataUnProtected.OwnedBoosterPacksUnProtected)
+        {
+            float currentMultiplier =GetMultiplier(item.BoosterPacksTypes);
+            item.CurrentMultiplier = currentMultiplier;
+        }
+        GameManager.Instance._PlayerGameDataProtected = playerGameDataUnProtected.ConvertToPlayerGameDataProtected();
+
+        string serial = JsonConvert.SerializeObject(playerGameDataUnProtected);
+        var request = new UpdateUserDataRequest
+        {
+            Data = new Dictionary<string, string>
+            {
+                { "PlayerGameData",  serial }
+            }
+        };
+        
         PlayFabClientAPI.UpdateUserData(request, result =>
         {
             Debug.Log($"Player GameData updated successfully. {LoginStateSession} ");

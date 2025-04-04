@@ -100,7 +100,16 @@ public class YourOwnedBooster : MonoBehaviour
 
         AvailableClicks.text = $"{boosterPackProtected.AvailableClicks} LEFT";
         float _currentMultiplier = (float)boosterPackProtected.CurrentMultiplier;
-        CurrentMultiplier.text = $"{_currentMultiplier.ToString("0.000")}X ";
+        float totalReferralMultiplier = PlayFabManager.Instance._PlayerReferral.TotalReferralMultiplier;
+
+        if (PlayFabManager.Instance._PlayerReferral.TotalReferrals > 0)
+        {
+            CurrentMultiplier.text = $"{_currentMultiplier.ToString("0.000")}x(<color=green>+{totalReferralMultiplier.ToString("0.000")}</color>)";
+        }
+        else
+        {
+            CurrentMultiplier.text = $"{_currentMultiplier.ToString("0.000")}x";
+        }
         TotalBNBEarned.text = $"{bnbEarnedTotal.ToString("0.0000000")} ";
         DailyResets.text = $"{boosterPackProtected.DailyTimeExpire} HRS";
         YourBooster = boosterPackProtected;

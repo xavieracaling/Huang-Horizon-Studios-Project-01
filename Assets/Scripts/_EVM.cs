@@ -130,10 +130,12 @@ public class _EVM : MonoBehaviour
             string signedMessage2 = signer.Sign(message.HexToByteArray(),new EthECKey(privateKey));
             var resultx = await simpleBank.WithdrawWithReceipt(weiAmount, signedMessage2.HexToByteArray());
             Debug.Log($"result {resultx.Status}");
+            
             if (resultx.Status == new HexBigInteger(1))
             {
                 UIManager.Instance.InstantiateMessagerPopPrefab_Message($"Success withdrawn worth {ethAmount} of BNB") ;
                 BoosterManager.Instance.BoosterShow();
+                _EVM.Instance.GetNativeBalanceOf();
             }
             else
             {

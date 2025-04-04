@@ -36,6 +36,7 @@ public class BoosterItemPurchase : MonoBehaviour
             loading.transform.SetAsLastSibling();
             
             var deposit = _EVM.Instance.DepositAmount(_BoosterPackProtected.Price, ()=> {
+                _EVM.Instance.GetNativeBalanceOf();
                 PlayFabManager.Instance.BoughtBoosterPack(_BoosterPackProtected);
                 loading.SetActive(false);
             });

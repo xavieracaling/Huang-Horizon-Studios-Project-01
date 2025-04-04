@@ -18,6 +18,9 @@ public class UIManager : MonoBehaviour
     public GameObject DisconnectedTransform; 
     public GameObject LoadingPrefab; 
     public MessagerPop MessagerPopPrefab; 
+    public NewbieNoReferral NewbieNoReferral; 
+    public ReferralTicketsMessengerPop ReferralTicketsMessengerPopsagerPopPrefab; 
+    public ReferralTicketsMessengerPop TenReferralTicketsMessengerPopsagerPopPrefab; 
     public Transform Container;
     public static UIManager Instance;
     public ScrollRect ScrollRect_CategoryShop;
@@ -53,10 +56,27 @@ public class UIManager : MonoBehaviour
         MainSceneConnectedUI.SetActive(false);
         DisconnectedTransform.SetActive(true);
     } 
+    public void InstantiateMessagerReferralPop(string msg) 
+    {
+        ReferralTicketsMessengerPop messagerPop = Instantiate(ReferralTicketsMessengerPopsagerPopPrefab,Container);
+        messagerPop.SetMessagerPop(msg);
+        messagerPop.transform.SetAsLastSibling();
+    }
+    public void InstantiateTenMessagerReferralPop(string msg = "10") 
+    {
+        ReferralTicketsMessengerPop messagerPop = Instantiate(TenReferralTicketsMessengerPopsagerPopPrefab,Container);
+        messagerPop.SetMessagerPop(msg);
+        messagerPop.transform.SetAsLastSibling();
+    }
     public void InstantiateMessagerPopPrefabFull(string msg, Action action,bool restart) 
     {
         MessagerPop messagerPop = Instantiate(MessagerPopPrefab,Container);
         messagerPop.SetMessagerPop(msg,action,restart);
+        messagerPop.transform.SetAsLastSibling();
+    }
+    public void InstantiateNewbieReferral() 
+    {
+        NewbieNoReferral messagerPop = Instantiate(NewbieNoReferral,Container);
         messagerPop.transform.SetAsLastSibling();
     }
     public void InstantiateMessagerPopPrefab_Restart(string msg) => InstantiateMessagerPopPrefabFull(msg,null,true);

@@ -1393,10 +1393,6 @@ MonoBehaviour:
       fakeValue: 0
     TotalBNBEarned:
       fakeValue: 0
-  TestAvailClicks:
-    fakeValue: 200
-  TestTotalBNBEarned:
-    fakeValue: 0
   AbleToSavePlayerData: 0
 --- !u!1 &140691989
 GameObject:
@@ -4915,6 +4911,14 @@ MonoBehaviour:
     TotalReferralMultiplier: 0
     TotalFirstReferrals: 0
     TotalSecondReferrals: 0
+    TotalThirdReferrals: 0
+  _TapTicketsInfo:
+    NewReferralTapTickets: 0
+    CurrentTapTickets: 0
+  _PlayerInfo:
+    Level: 0
+    Experience: 0
+    RequiredExperience: 0
   ReferredBy: 
 --- !u!1 &454026942
 GameObject:
@@ -10000,6 +10004,9 @@ MonoBehaviour:
   DisconnectedTransform: {fileID: 6461791650430919415}
   LoadingPrefab: {fileID: 2956185445685457688, guid: 23ff4b3c0431a054a9efcce5d5a243be, type: 3}
   MessagerPopPrefab: {fileID: 7277275838696373242, guid: bbef6bc07dd970a498f960882396c8aa, type: 3}
+  NewbieNoReferral: {fileID: 6543824216277168638, guid: 5a01cbb3f4380cf40a9890a254b1c35f, type: 3}
+  ReferralTicketsMessengerPopsagerPopPrefab: {fileID: 9183848910647777737, guid: a30dd5f7df1ba2542bee15a06577ae02, type: 3}
+  TenReferralTicketsMessengerPopsagerPopPrefab: {fileID: 9183848910647777737, guid: ae69d4f14a6cb9a47ae7d9113913aa21, type: 3}
   Container: {fileID: 1367654575}
   ScrollRect_CategoryShop: {fileID: 1623014202}
   ListCategoriesShopG:
@@ -16286,7 +16293,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -46, y: -56}
+  m_AnchoredPosition: {x: -46.00006, y: -56}
   m_SizeDelta: {x: 160, y: 30}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1351894555

@@ -1,16 +1,19 @@
 using System.Collections;
 using System.Collections.Generic;
+using GUPS.AntiCheat.Protected;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class BoosterItemPurchase : MonoBehaviour
 {
     public Button Get;
+    public Button Redeem;
     public Text DescriptionUI;
     public Text TitleUI;
     public Text PriceUI;
     public Text MAXMultiplierUI;
     public BoosterPackProtected _BoosterPackProtected;
+    public ProtectedUInt32 TapTicketPrice;
     void Awake()
     {
         Initialize() ;

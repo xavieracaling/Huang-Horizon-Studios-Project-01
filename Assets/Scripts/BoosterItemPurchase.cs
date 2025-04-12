@@ -3,7 +3,13 @@ using System.Collections.Generic;
 using GUPS.AntiCheat.Protected;
 using UnityEngine;
 using UnityEngine.UI;
-
+using ChainSafe.Gaming.UnityPackage;
+using ChainSafe.Gaming.Web3;
+using ChainSafe.Gaming.Evm.Providers;
+using Nethereum.Hex.HexTypes;
+using PlayFab.ClientModels;
+using PlayFab;
+using System;
 public class BoosterItemPurchase : MonoBehaviour
 {
     public Button Get;
@@ -21,12 +27,16 @@ public class BoosterItemPurchase : MonoBehaviour
     }
     public async void Initialize() 
     {
-        float newPrice = _BoosterPackProtected.Price / 0.0001428571f;
-        TapTicketPrice = (ProtectedUInt32)newPrice ; 
+        ProtectedFloat newPrice = _BoosterPackProtected.Price / 0.0001428571f;
+        TapTicketPrice = (ProtectedUInt32)(float)newPrice ; 
         ValueTap.text = TapTicketPrice.ToString();
         Get.onClick.AddListener(()=>
         {
-            StartCoroutine(getBooster());
+            StartCoroutine(getBoosterVIABNB());
+        });
+        Redeem.onClick.AddListener(()=>
+        {
+            getBoosterVIATickets();
         });
         TitleUI.text = _BoosterPackProtected.Title;
         PriceUI.text = $"{_BoosterPackProtected.Price} BNB";
@@ -36,27 +46,83 @@ public class BoosterItemPurchase : MonoBehaviour
 
 
     }
-    IEnumerator getBooster()
+    IEnumerator getBoosterVIABNB()
     {
-        yield return _EVM.Instance.StartCoroutine(_EVM.Instance.IGetNativeBalanceOf());
-        float playerBalanceBNB = float.Parse( UIManager.Instance.BNBUI.text);
+        var getNativeBalanceOf = Web3Unity.Web3.RpcProvider.GetBalance(Web3Unity.Instance.Address);
+        GameObject loading = UIManager.Instance.LoadingShow();
+        loading.transform.SetAsLastSibling();
+
+        yield return new WaitUntil(() => getNativeBalanceOf.IsCompleted);
+        yield return new WaitForSeconds(1f);
+
+        HexBigInteger balance =   getNativeBalanceOf.Result;
+        ProtectedFloat wei = float.Parse(balance.ToString());
+        ProtectedFloat decimals = 1000000000000000000; // 18 decimals
+        ProtectedFloat eth = wei / decimals;
+        ProtectedFloat playerBalanceBNB = eth;
+
         if(playerBalanceBNB >= _BoosterPackProtected.Price)
         {
-            GameObject loading = UIManager.Instance.LoadingShow();
-            loading.transform.SetAsLastSibling();
-            
             var deposit = _EVM.Instance.DepositAmount(_BoosterPackProtected.Price, ()=> {
-                _EVM.Instance.GetNativeBalanceOf();
                 PlayFabManager.Instance.BoughtBoosterPack(_BoosterPackProtected);
-                loading.SetActive(false);
             });
             yield return new WaitUntil(() => deposit.IsCompleted); 
+            Destroy(loading);
+
             Debug.Log("Transaction complete!");
         }
         else 
         {
             Debug.Log("No money");
-
+            UIManager.Instance.InstantiateMessagerPopPrefab_Message($"Failed to buy booster. Not enough BNB") ;
+            Destroy(loading);
+            
         }
     }
+    void getBoosterVIATickets()
+    {
+     
+        GameObject loading = UIManager.Instance.LoadingShow();
+        loading.transform.SetAsLastSibling();
+        var request = new ExecuteCloudScriptRequest
+        {
+            FunctionName = "buyBoosterViaTicket",
+            FunctionParameter = new {
+                playerId = PlayFabManager.Instance.PlayFabID,
+                itemPriceTicket = (Int64)TapTicketPrice,
+            }
+
+        };
+        PlayFabClientAPI.ExecuteCloudScript(request,result   => {
+            bool bought = Convert.ToBoolean(result.FunctionResult);
+            Destroy(loading);
+            if (bought)
+            {
+                PlayFabManager.Instance._TapTicketsInfo.CurrentTapTickets -= (int)(Int64)TapTicketPrice;
+                if (PlayFabManager.Instance._TapTicketsInfo.CurrentTapTickets < 0)
+                {
+                    PlayFabManager.Instance._TapTicketsInfo.CurrentTapTickets = 0;
+                }
+                PlayFabManager.Instance.BoughtBoosterPack(_BoosterPackProtected);
+                UIManager.Instance.UpdateUITapTickets();
+                UIManager.Instance.InstantiateMessagerPopPrefab_Message($"Bought success! ") ;
+            }
+            else
+            {
+                UIManager.Instance.InstantiateMessagerPopPrefab_Message($"Failed to buy booster. Not enough tickets or something went wrong") ;
+            }
+            Destroy(loading);
+
+        }, error   => {
+            Destroy(loading);
+            UIManager.Instance.InstantiateMessagerPopPrefab_Message($"Failed to buy booster. Not enough tickets or something went wrong") ;
+        });
+  
+      
+     
+        
+            
+        
+    }
+   
 }

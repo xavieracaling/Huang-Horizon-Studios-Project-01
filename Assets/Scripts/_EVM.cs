@@ -104,10 +104,7 @@ public class _EVM : MonoBehaviour
             {
                 UIManager.Instance.InstantiateMessagerPopPrefab_Message($"Bought booster success!!") ;
             }
-            else
-            {
-                UIManager.Instance.InstantiateMessagerPopPrefab_Message($"Failed to buy booster.") ;
-            }
+          
         }
         public void _Withdraw() => Withdraw() ;
 

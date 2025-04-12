@@ -125,28 +125,55 @@ public class PlayFabManager : MonoBehaviour
 
     public void GotReferred()
     {
-        Debug.Log($"WebglReferral.Instance.ReferralTest {WebglReferral.Instance.ReferralTest}");
-        string h = WebglReferral.Instance.ReferralTest;
-        var request = new ExecuteCloudScriptRequest
-        {
-            FunctionName = "addReferral",
-            FunctionParameter = new { 
-                referringPlayerIds = h ,
-                 playerId = PlayFabSettings.staticPlayer.PlayFabId 
-                 },
-            GeneratePlayStreamEvent = true
-        };
-        
-        PlayFabClientAPI.ExecuteCloudScript(request, result =>
-        {
-            UIManager.Instance.InstantiateTenMessagerReferralPop("10");
-            _TapTicketsInfo = JsonConvert.DeserializeObject<TapTicketsInfo>(result.FunctionResult.ToString());
+        Debug.Log($"WebglReferral.Instance.ReferralTest {WebglReferral.Instance.ReferralID}");
+        string h = WebglReferral.Instance.ReferralID;
 
-            Debug.Log("Referral added!" );
-        }, error =>
+        var requestBooster = new GetUserDataRequest
         {
-            Debug.LogError("Error adding referral: " + error.GenerateErrorReport());
+            Keys = new List<string> { "BoughtFirstBooster" }
+        };
+
+        PlayFabClientAPI.GetUserData(requestBooster, result =>
+        {
+            Debug.Log("User data received:");
+            if (result.Data != null)
+            {
+                bool boughtBooster = Convert.ToBoolean(result.Data["BoughtFirstBooster"].Value) ;
+                if (boughtBooster)
+                {
+                    var request = new ExecuteCloudScriptRequest
+                    {
+                        FunctionName = "addReferral",
+                        FunctionParameter = new { 
+                            referringPlayerIds = h ,
+                            playerId = PlayFabSettings.staticPlayer.PlayFabId 
+                            },
+                        GeneratePlayStreamEvent = true
+                    };
+                    
+                    PlayFabClientAPI.ExecuteCloudScript(request, result =>
+                    {
+
+                      //  UIManager.Instance.InstantiateTenMessagerReferralPop("10");
+                        _TapTicketsInfo = JsonConvert.DeserializeObject<TapTicketsInfo>(result.FunctionResult.ToString());
+                        UIManager.Instance.UpdateUITapTickets();
+                        Debug.Log("Referral added!" );
+                    }, error =>
+                    {
+                        Debug.LogError("Error adding referral: " + error.GenerateErrorReport());
+                    });
+                }
+            }
+            else
+            {
+                Debug.Log("No user data available.");
+            }
+        },
+        error =>
+        {
+            Debug.LogError("Error getting user data: " + error.GenerateErrorReport());
         });
+        
     }
     public void ValidateReferralCode(string referringId , Action action)
     {
@@ -162,7 +189,7 @@ public class PlayFabManager : MonoBehaviour
             GeneratePlayStreamEvent = false
         };
 
-        PlayFabClientAPI.ExecuteCloudScript(request, result =>
+        PlayFabClientAPI.ExecuteCloudScript(request, (Action<ExecuteCloudScriptResult>)(result =>
         {
             if (result.FunctionResult != null)
             {
@@ -171,9 +198,27 @@ public class PlayFabManager : MonoBehaviour
                 Destroy(loading);
                 if (isValid)
                 {
-                    WebglReferral.Instance.ReferralTest = referringId;
+                    WebglReferral.Instance.ReferralID = referringId;
+                    var request = new UpdateUserDataRequest
+                    {
+                        Data = new Dictionary<string, string>
+                        {
+                            { "ReferredBy",  referringId },
+                        }
+                    };
+                    PlayFabClientAPI.UpdateUserData(request, result =>
+                    {
+                        Debug.Log($"ReferredBy updated successfully. ");
+                    }, error =>
+                    {
+                        UIManager.Instance.InstantiateMessagerPopPrefab_Restart("Server error, please restart the game.");
+                        Debug.LogError("Failed to update user data: " + error.GenerateErrorReport());
+                        return;
+                    });
+                    
                     action?.Invoke();
-                    GotReferred();
+                    
+                  //  GotReferred();
                 }
                 else
                 {
@@ -184,7 +229,7 @@ public class PlayFabManager : MonoBehaviour
             {
                 Destroy(loading);
             }
-        }, error =>
+        }), error =>
             {
                 Destroy(loading);
             });
@@ -232,6 +277,7 @@ public class PlayFabManager : MonoBehaviour
                     { "PlayerReferral",  serial_PlayerReferral },
                     { "TapTicketsInfo",  serial_TapTicketsInfo },
                     { "PlayerInfo",  serial_PlayerInfo },
+                    { "BoughtFirstBooster",  "false" },
                     { "ReferredBy",  "" },
                 }
             };
@@ -253,25 +299,42 @@ public class PlayFabManager : MonoBehaviour
         }
         else
         {
+            WebglReferral.Instance.ReferralID   = "";
+
             PlayFabClientAPI.GetUserData(new GetUserDataRequest(), result => {
                 try
                 {
-                    
+
+                    WebglReferral.Instance.ReferralID = result.Data["ReferredBy"].Value;
+                    Debug.Log("test 1");
                     if(result.Data.ContainsKey("PlayerGameData"))
                     {
                         PlayerGameDataUnProtected playerGameDataProtected = JsonConvert.DeserializeObject<PlayerGameDataUnProtected>(result.Data["PlayerGameData"].Value);
                         GameManager.Instance._PlayerGameDataProtected = playerGameDataProtected.ConvertToPlayerGameDataProtected();
                     }
+                    Debug.Log("test 2");
+
                     _TapTicketsInfo = JsonConvert.DeserializeObject<TapTicketsInfo >(result.Data["TapTicketsInfo"].Value);
+                    UIManager.Instance.UpdateUITapTickets();
                     _PlayerInfo = JsonConvert.DeserializeObject<PlayerInfo>(result.Data["PlayerInfo"].Value);
+                    Debug.Log("test 3");
+
                     _PlayerReferral = JsonConvert.DeserializeObject<PlayerReferral>(result.Data["PlayerReferral"].Value);
                     if (_PlayerReferral.TotalFirstReferrals > 0 && GameManager.Instance._PlayerGameDataProtected.OwnedBoosterPacks.Count > 0)
                     {
+                        Debug.Log("test 4");
+
                         RefreshReferrals();
+                        Debug.Log("test 5");
+
                     }
                     if (_TapTicketsInfo.NewReferralTapTickets > 0)
                     {
-                        UIManager.Instance.InstantiateMessagerReferralPop (_TapTicketsInfo.NewReferralTapTickets.ToString());
+                        Debug.Log("test 6");
+
+                        UIManager.Instance.InstantiateEarnedMessagerReferralPop (_TapTicketsInfo.NewReferralTapTickets.ToString());
+                        Debug.Log("test 7");
+
                         var request = new ExecuteCloudScriptRequest
                         {
                             FunctionName = "newTicketReferralRefresh",
@@ -279,8 +342,13 @@ public class PlayFabManager : MonoBehaviour
                                 playerID = PlayFabID
                             }
                         };
+                        Debug.Log("test 8");
+
                         PlayFabClientAPI.ExecuteCloudScript(request, success => {Debug.Log("Refreshed newTicketReferralRefresh");}, error => {Debug.Log("Error newTicketReferralRefresh");});
+                        Debug.Log("test ");
+                   
                     }
+
                 }
                 catch (System.Exception)
                 {
@@ -445,6 +513,7 @@ public class PlayFabManager : MonoBehaviour
 
         GameManager.Instance._PlayerGameDataProtected = playerGameDataUnProtected.ConvertToPlayerGameDataProtected();
         string serial = JsonConvert.SerializeObject(playerGameDataUnProtected);
+        
         var request = new UpdateUserDataRequest
         {
             Data = new Dictionary<string, string>
@@ -452,16 +521,60 @@ public class PlayFabManager : MonoBehaviour
                 { "PlayerGameData",  serial }
             }
         };
+        var checkBooster = new GetUserDataRequest
+        {
+            Keys = new List<string> { "BoughtFirstBooster"}
+        };
+        PlayFabClientAPI.GetUserData(checkBooster, result =>
+        {
+            bool boughtBooster = Convert.ToBoolean(result.Data["BoughtFirstBooster"].Value) ;
+            if (!boughtBooster && WebglReferral.Instance.ReferralID != "")
+            {
+                var updateBooster = new UpdateUserDataRequest
+                {
+                    Data = new Dictionary<string, string>
+                    {
+                        { "BoughtFirstBooster",  "true" }
+                    }
+                };
 
-        PlayFabClientAPI.UpdateUserData(request, result =>
+                PlayFabClientAPI.UpdateUserData(updateBooster, result =>
+                {
+                    Debug.Log($"updateBooster successfully. {LoginStateSession} ");
+                    PlayFabClientAPI.UpdateUserData(request, result =>
+                    {
+                        GotReferred();
+                        Debug.Log($"Player GameData updated successfully. {LoginStateSession} ");
+                    }, error =>
+                    {
+                        UIManager.Instance.InstantiateMessagerPopPrefab_Restart("Server error, please restart the game.");
+                        Debug.LogError("Failed to update user data: " + error.GenerateErrorReport());
+                    });
+                }, error =>
+                {
+                    UIManager.Instance.InstantiateMessagerPopPrefab_Restart("Server error, please restart the game.");
+                    Debug.LogError("Failed to update user data: " + error.GenerateErrorReport());
+                });
+            }
+            else
+            {
+                PlayFabClientAPI.UpdateUserData(request, result =>
+                {
+                    Debug.Log($"Player GameData updated successfully. {LoginStateSession} ");
+                }, error =>
+                {
+                    UIManager.Instance.InstantiateMessagerPopPrefab_Restart("Server error, please restart the game.");
+                    Debug.LogError("Failed to update user data: " + error.GenerateErrorReport());
+                });
+            }
+        },
+        error =>
         {
-            
-            Debug.Log($"Player GameData updated successfully. {LoginStateSession} ");
-        }, error =>
-        {
-            UIManager.Instance.InstantiateMessagerPopPrefab_Restart("Server error, please restart the game.");
-            Debug.LogError("Failed to update user data: " + error.GenerateErrorReport());
+            Debug.LogError("Error getting user data: " + error.GenerateErrorReport());
         });
+        
+            
+       
     }
 
     public void RefreshReferrals()
@@ -503,16 +616,20 @@ public class PlayFabManager : MonoBehaviour
                 DisplayName = UIManager.Instance.NameUI.text
             };
 
-            PlayFabClientAPI.UpdateUserTitleDisplayName(nicknameRequest, result =>
+            PlayFabClientAPI.UpdateUserTitleDisplayName(nicknameRequest, (Action<UpdateUserTitleDisplayNameResult>)(result =>
             {
-                if (WebglReferral.Instance.ReferralTest == "" )
+                if (WebglReferral.Instance.ReferralID == "" )
                 {
                     UIManager.Instance.InstantiateNewbieReferral();
+                }
+                else
+                {
+                    UIManager.Instance.InstantiateMessagerReferralPop("10");
                 }
                 Debug.Log("Nickname successfully set to: " + result.DisplayName);
                 PlayerName = result.DisplayName;
                 UIManager.Instance.ConnectedSceneUI();
-            }, error =>
+            }), error =>
             {
                 Debug.LogError("Failed to set nickname: " + error.GenerateErrorReport());
             });

@@ -5,17 +5,16 @@ using UnityEngine.UI;
 
 public class WebglReferral : MonoBehaviour
 {
-    public string ReferralID ;
     public Text TestRefferal;
     public static WebglReferral Instance;
-    public string ReferralTest;
+    public string ReferralID;
     void Awake()
     {
         Instance = this;
     }
     void Start()
     {
-        if (ReferralTest != "")
+        if (ReferralID != "")
         {
             return;
         }

@@ -336,6 +336,7 @@ MonoBehaviour:
   TitleUI: {fileID: 58088927}
   PriceUI: {fileID: 1148458644}
   MAXMultiplierUI: {fileID: 1190823869}
+  ValueTap: {fileID: 1018427666}
   _BoosterPackProtected:
     TimeExpirationsProtected:
       DailyResetTarget:
@@ -4077,6 +4078,7 @@ MonoBehaviour:
   TitleUI: {fileID: 519749385}
   PriceUI: {fileID: 964332438}
   MAXMultiplierUI: {fileID: 1776452132}
+  ValueTap: {fileID: 1437567754}
   _BoosterPackProtected:
     TimeExpirationsProtected:
       DailyResetTarget:
@@ -5381,6 +5383,7 @@ MonoBehaviour:
   TitleUI: {fileID: 445936160}
   PriceUI: {fileID: 1339660633}
   MAXMultiplierUI: {fileID: 163811080}
+  ValueTap: {fileID: 1366200533}
   _BoosterPackProtected:
     TimeExpirationsProtected:
       DailyResetTarget:
@@ -7881,6 +7884,7 @@ MonoBehaviour:
   TitleUI: {fileID: 364097728}
   PriceUI: {fileID: 126284436}
   MAXMultiplierUI: {fileID: 1833978153}
+  ValueTap: {fileID: 627198162}
   _BoosterPackProtected:
     TimeExpirationsProtected:
       DailyResetTarget:
@@ -9932,6 +9936,7 @@ MonoBehaviour:
   TitleUI: {fileID: 419596001}
   PriceUI: {fileID: 620112714}
   MAXMultiplierUI: {fileID: 1402246366}
+  ValueTap: {fileID: 1283654150}
   _BoosterPackProtected:
     TimeExpirationsProtected:
       DailyResetTarget:
@@ -10113,9 +10118,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 625586952bc64774882e4d774fe916ee, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ReferralID: 
   TestRefferal: {fileID: 1685575886}
-  ReferralTest: 
+  ReferralID: 
 --- !u!1 &729086470
 GameObject:
   m_ObjectHideFlags: 0
@@ -11265,6 +11269,7 @@ MonoBehaviour:
   TitleUI: {fileID: 1951743928}
   PriceUI: {fileID: 537741707}
   MAXMultiplierUI: {fileID: 1513238445}
+  ValueTap: {fileID: 1946792056}
   _BoosterPackProtected:
     TimeExpirationsProtected:
       DailyResetTarget:
@@ -13000,6 +13005,7 @@ MonoBehaviour:
   MessagerPopPrefab: {fileID: 7277275838696373242, guid: bbef6bc07dd970a498f960882396c8aa, type: 3}
   NewbieNoReferral: {fileID: 6543824216277168638, guid: 5a01cbb3f4380cf40a9890a254b1c35f, type: 3}
   ReferralTicketsMessengerPopsagerPopPrefab: {fileID: 9183848910647777737, guid: a30dd5f7df1ba2542bee15a06577ae02, type: 3}
+  EarnedReferralTicketsMessengerPopsagerPopPrefab: {fileID: 9183848910647777737, guid: 06248f5e1dd0d854baa1527835dfab5f, type: 3}
   TenReferralTicketsMessengerPopsagerPopPrefab: {fileID: 9183848910647777737, guid: ae69d4f14a6cb9a47ae7d9113913aa21, type: 3}
   Container: {fileID: 1367654575}
   ScrollRect_CategoryShop: {fileID: 1623014202}
@@ -13011,6 +13017,9 @@ MonoBehaviour:
   - {fileID: 1002604612}
   - {fileID: 1943982818}
   - {fileID: 1146622231}
+  ListTapTicketsUI:
+  - {fileID: 1479066309}
+  - {fileID: 703029030}
 --- !u!1 &897297228
 GameObject:
   m_ObjectHideFlags: 0
@@ -13610,6 +13619,7 @@ MonoBehaviour:
   TitleUI: {fileID: 1746916074}
   PriceUI: {fileID: 2139074727}
   MAXMultiplierUI: {fileID: 1565873573}
+  ValueTap: {fileID: 38004206}
   _BoosterPackProtected:
     TimeExpirationsProtected:
       DailyResetTarget:
@@ -15115,6 +15125,7 @@ MonoBehaviour:
   TitleUI: {fileID: 1289927842}
   PriceUI: {fileID: 442314232}
   MAXMultiplierUI: {fileID: 729086472}
+  ValueTap: {fileID: 561228585}
   _BoosterPackProtected:
     TimeExpirationsProtected:
       DailyResetTarget:
@@ -17797,6 +17808,7 @@ MonoBehaviour:
   TitleUI: {fileID: 40000578}
   PriceUI: {fileID: 1782884408}
   MAXMultiplierUI: {fileID: 1041372020}
+  ValueTap: {fileID: 542593712}
   _BoosterPackProtected:
     TimeExpirationsProtected:
       DailyResetTarget:
@@ -20251,7 +20263,7 @@ RectTransform:
   m_GameObject: {fileID: 1318963237}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.3425352, y: 0.3425352, z: 0.3425352}
+  m_LocalScale: {x: 0.26986638, y: 0.26986638, z: 0.26986638}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 810542262}
@@ -20259,7 +20271,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 55.06801, y: 18.99968}
+  m_AnchoredPosition: {x: 29.429886, y: 25.436916}
   m_SizeDelta: {x: 595.629, y: 142.26}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1318963239
@@ -23034,6 +23046,7 @@ MonoBehaviour:
   TitleUI: {fileID: 1944132591}
   PriceUI: {fileID: 42974911}
   MAXMultiplierUI: {fileID: 1172880453}
+  ValueTap: {fileID: 769840909}
   _BoosterPackProtected:
     TimeExpirationsProtected:
       DailyResetTarget:
@@ -23753,6 +23766,7 @@ MonoBehaviour:
   TitleUI: {fileID: 413041299}
   PriceUI: {fileID: 670416609}
   MAXMultiplierUI: {fileID: 1836294549}
+  ValueTap: {fileID: 788981404}
   _BoosterPackProtected:
     TimeExpirationsProtected:
       DailyResetTarget:
@@ -26675,7 +26689,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: ' REFERRAL TEST:'
+  m_Text: 
 --- !u!222 &1685575887
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -27020,6 +27034,7 @@ MonoBehaviour:
   TitleUI: {fileID: 1219305624}
   PriceUI: {fileID: 702432704}
   MAXMultiplierUI: {fileID: 370089200}
+  ValueTap: {fileID: 778910044}
   _BoosterPackProtected:
     TimeExpirationsProtected:
       DailyResetTarget:
@@ -27894,6 +27909,7 @@ MonoBehaviour:
   TitleUI: {fileID: 1947634925}
   PriceUI: {fileID: 2082028007}
   MAXMultiplierUI: {fileID: 1485122880}
+  ValueTap: {fileID: 794509648}
   _BoosterPackProtected:
     TimeExpirationsProtected:
       DailyResetTarget:
@@ -29674,6 +29690,7 @@ MonoBehaviour:
   TitleUI: {fileID: 1925582940}
   PriceUI: {fileID: 873424286}
   MAXMultiplierUI: {fileID: 849614369}
+  ValueTap: {fileID: 453527884}
   _BoosterPackProtected:
     TimeExpirationsProtected:
       DailyResetTarget:
@@ -32528,6 +32545,7 @@ MonoBehaviour:
   TitleUI: {fileID: 380680780}
   PriceUI: {fileID: 519676608}
   MAXMultiplierUI: {fileID: 1179336508}
+  ValueTap: {fileID: 933522498}
   _BoosterPackProtected:
     TimeExpirationsProtected:
       DailyResetTarget:

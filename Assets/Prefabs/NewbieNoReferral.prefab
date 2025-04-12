@@ -79,7 +79,8 @@ MonoBehaviour:
     m_VerticalOverflow: 0
     m_LineSpacing: 0.72
   m_Text: Hey, BNB earner! Welcome! Do you have a referral code? Enter it now to
-    earn 10 free Tap Tickets, which you can use to get boosters and earn even more!"
+    earn 10 free Tap Tickets when you buy your first booster, which you can use to
+    get boosters and earn even more!"
 --- !u!1 &601814418917186883
 GameObject:
   m_ObjectHideFlags: 0

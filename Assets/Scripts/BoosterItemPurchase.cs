@@ -12,6 +12,7 @@ public class BoosterItemPurchase : MonoBehaviour
     public Text TitleUI;
     public Text PriceUI;
     public Text MAXMultiplierUI;
+    public Text ValueTap;
     public BoosterPackProtected _BoosterPackProtected;
     public ProtectedUInt32 TapTicketPrice;
     void Awake()
@@ -20,6 +21,9 @@ public class BoosterItemPurchase : MonoBehaviour
     }
     public async void Initialize() 
     {
+        float newPrice = _BoosterPackProtected.Price / 0.0001428571f;
+        TapTicketPrice = (ProtectedUInt32)newPrice ; 
+        ValueTap.text = TapTicketPrice.ToString();
         Get.onClick.AddListener(()=>
         {
             StartCoroutine(getBooster());
@@ -28,6 +32,9 @@ public class BoosterItemPurchase : MonoBehaviour
         PriceUI.text = $"{_BoosterPackProtected.Price} BNB";
         DescriptionUI.text = $"BUY {_BoosterPackProtected.Price} BNB AND GET UP TO {_BoosterPackProtected.Price *_BoosterPackProtected.OriginalMultiplier } BNB IN ONLY {_BoosterPackProtected.FinalTimeExpire} DAYS BY CLICKING 50 TIMES PER DAY";
         MAXMultiplierUI.text = $"MAX MULTIPLIER : {_BoosterPackProtected.OriginalMultiplier}x";
+        //0.0001428571
+
+
     }
     IEnumerator getBooster()
     {

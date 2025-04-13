@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 using PlayFab;
 using PlayFab.ClientModels;
 using System.Linq;
@@ -20,6 +21,8 @@ public class PlayFabManager : MonoBehaviour
     public TapTicketsInfo _TapTicketsInfo;
     public PlayerInfo _PlayerInfo;
 
+    public Text Referral1UI;
+    public Text Referral2UI;
     long targetT;
     public string ReferredBy;
     void Awake()
@@ -238,6 +241,8 @@ public class PlayFabManager : MonoBehaviour
     {
         Debug.Log("Login successful!");
         PlayFabID = result.PlayFabId;
+        Referral1UI.text = $"https://bnb-clickrush.com/game?referralCode={PlayFabID}";
+        Referral2UI.text = $"{PlayFabID}";
         Debug.Log("PlayFab ID: " + result.PlayFabId);
         if (result.NewlyCreated) // new created
         {

@@ -27,7 +27,6 @@ using System.Linq;
 
 public class _EVM : MonoBehaviour
     {
-        private static readonly Sha3Keccack sha3 = new Sha3Keccack();
         [SerializeField] private string contractAddress;
         [SerializeField] private string privateKey = "e992704ff76a7fc1529d0d7a4612a4818935b11f45c52b1ab01156155c808907";
 

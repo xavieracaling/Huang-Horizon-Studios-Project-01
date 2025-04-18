@@ -4,3 +4,8 @@ public enum BoosterPacksTypes
     B,
     C
 }
+public enum Modes 
+{
+    BoosterMode,
+    Adventure,
+}

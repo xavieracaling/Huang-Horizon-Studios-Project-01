@@ -29,11 +29,53 @@ public class GameManager : MonoBehaviour
     public List<Action> ListOfOnSavePlayerData = new List<Action>();
     public Coroutine ISavePlayerData;
     public bool AbleToSavePlayerData;
+
+    public Modes CurrentMode;
+    public GameObject GameContainer_Adventure;
+    public GameObject GameContainer_BoosterMode;
     void Awake()
     {
         AbleToSavePlayerData = true;
         Instance = this;
     }
+    
+    public void GotoMenu()
+    {
+        gameStopBoosterMode();
+        StopISavePlayerData();
+        CurrentUsedPlayerBoosterPackProtected = null;
+        GameContainer.SetActive(false);
+        MainMenuGO.SetActive(true);
+        MenuCenterBG.SetActive(true);
+    }
+    #region AdventureMode
+
+    public void StartGameAdventure() => PlayFabManager.Instance.ExecuteWithSessionCheck( () => 
+    {
+        CurrentMode = Modes.Adventure;
+        GameContainer_BoosterMode.SetActive(false);
+        GameContainer_Adventure.SetActive(true);
+    });
+
+
+    #endregion
+
+
+    #region  BoosterMode
+    public void StartGameBoosterMode() => PlayFabManager.Instance.ExecuteWithSessionCheck( () => 
+    {
+        CurrentMode = Modes.BoosterMode;
+        if(_PlayerGameDataProtected.OwnedBoosterPacks.Count > 0 )
+        {
+            Debug.Log($"_PlayerGameDataProtected.OwnedBoosterPacks.Count {_PlayerGameDataProtected.OwnedBoosterPacks.Count}");
+            BoosterManager.Instance.BoosterShow();
+        }
+        else
+        {
+            Debug.Log("No boosters!");
+            BoosterManager.Instance.NoBooster();
+        }
+    });
     public void StartISavePlayerData()
     {
         if(ISavePlayerData != null)
@@ -61,22 +103,7 @@ public class GameManager : MonoBehaviour
 
         }
     }
-    public void StartGame() => PlayFabManager.Instance.ExecuteWithSessionCheck( () => 
-    {
-        if(_PlayerGameDataProtected.OwnedBoosterPacks.Count > 0 )
-        {
-            Debug.Log($"_PlayerGameDataProtected.OwnedBoosterPacks.Count {_PlayerGameDataProtected.OwnedBoosterPacks.Count}");
-            BoosterManager.Instance.BoosterShow();
-        }
-        else
-        {
-            Debug.Log("No boosters!");
-            BoosterManager.Instance.NoBooster();
-        }
-        return;
-    });
-
-    public void FinalStartGame(PlayerBoosterPackProtected playerBoosterPackProtected)
+    public void FinalStartGameBoosterMode(PlayerBoosterPackProtected playerBoosterPackProtected)
     {
         CurrentUsedPlayerBoosterPackProtected = playerBoosterPackProtected;
         GameContainer.SetActive(true);
@@ -86,22 +113,14 @@ public class GameManager : MonoBehaviour
         IStartSpawnRushers = StartCoroutine(StartSpawnRushers());
         Debug.Log("Game has started!");
     }
-    public void GotoMenu()
-    {
-        gameStop();
-        StopISavePlayerData();
-        CurrentUsedPlayerBoosterPackProtected = null;
-        GameContainer.SetActive(false);
-        MainMenuGO.SetActive(true);
-        MenuCenterBG.SetActive(true);
-    }
+  
     public void CompletedBooster()
     {
-        gameStop();
+        gameStopBoosterMode();
         // StopISavePlayerData();
         UIManager.Instance.InstantiateMessagerPopPrefabFull("Great job! No more available clicks, please check your booster.", () =>GotoMenu(),false );
     }
-    void gameStop()
+    void gameStopBoosterMode()
     {
         if (IStartSpawnRushers != null)
         {
@@ -166,4 +185,5 @@ public class GameManager : MonoBehaviour
         }
         
     }
+    #endregion
 }

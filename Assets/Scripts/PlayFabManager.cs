@@ -69,7 +69,7 @@ public class PlayFabManager : MonoBehaviour
                 else
                 {
                     BoosterManager.Instance.YourBoosterGO.SetActive(false);
-                    GameManager.Instance.FinalStartGame(playerBoosterPackProtected);
+                    GameManager.Instance.FinalStartGameBoosterMode(playerBoosterPackProtected);
                 }
                 Destroy(loading);
 

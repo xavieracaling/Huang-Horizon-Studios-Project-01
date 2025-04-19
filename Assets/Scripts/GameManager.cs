@@ -41,18 +41,28 @@ public class GameManager : MonoBehaviour
     
     public void GotoMenu()
     {
-        gameStopBoosterMode();
-        StopISavePlayerData();
         CurrentUsedPlayerBoosterPackProtected = null;
         GameContainer.SetActive(false);
+        GameContainer_Adventure.SetActive(false);
+        GameContainer_BoosterMode.SetActive(false);
         MainMenuGO.SetActive(true);
         MenuCenterBG.SetActive(true);
+        if (CurrentMode == Modes.BoosterMode)
+        {
+            gameStopBoosterMode();
+            StopISavePlayerData();
+        }
+        else if (CurrentMode == Modes.Adventure)
+        {
+            
+        }
     }
     #region AdventureMode
 
     public void StartGameAdventure() => PlayFabManager.Instance.ExecuteWithSessionCheck( () => 
     {
         CurrentMode = Modes.Adventure;
+        GameContainer.SetActive(true);
         GameContainer_BoosterMode.SetActive(false);
         GameContainer_Adventure.SetActive(true);
     });
@@ -107,6 +117,8 @@ public class GameManager : MonoBehaviour
     {
         CurrentUsedPlayerBoosterPackProtected = playerBoosterPackProtected;
         GameContainer.SetActive(true);
+        GameContainer_BoosterMode.SetActive(true);
+        GameContainer_Adventure.SetActive(false);
         MainMenuGO.SetActive(false);
         MenuCenterBG.SetActive(false);
         StartISavePlayerData();
@@ -118,6 +130,7 @@ public class GameManager : MonoBehaviour
     {
         gameStopBoosterMode();
         // StopISavePlayerData();
+        GameContainer.SetActive(false);
         UIManager.Instance.InstantiateMessagerPopPrefabFull("Great job! No more available clicks, please check your booster.", () =>GotoMenu(),false );
     }
     void gameStopBoosterMode()

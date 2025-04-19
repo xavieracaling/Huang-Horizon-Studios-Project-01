@@ -81,7 +81,7 @@ public class LevelManager : MonoBehaviour
         float expected = CurrentXP +  xpGain;
         if (expected >=  RequiredXP)
         {
-            RequiredXP += 290;
+            RequiredXP += 150;
             CurrentLevel++;
         }
         CurrentXP += xpGain;

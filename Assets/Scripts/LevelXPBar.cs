@@ -123,12 +123,14 @@ public class LevelXPBar : MonoBehaviour
             
             if (CurrentXP >= tempoRequiredXP)
             {
+                oldRequiredXP = RequiredXP;
                 CurrentLevelUI.text = $"LEVEL: {CurrentLevel}" ;
                 XPCurrentMaxUI.text = $"{CurrentXP}/{RequiredXP}";
                 XPSlider.value = 0;
                 
                 int _oldXP = (int)currentXP;
                 sliderAnimationSync(RequiredXP,_oldXP,true,0.5f); // level up
+
             }
            // Debug.Log("animate done");
 

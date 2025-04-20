@@ -21,7 +21,8 @@ public class PlayFabManager : MonoBehaviour
     public string PlayFabID {get; private set;}
     public PlayerReferral _PlayerReferral;
     public TapTicketsInfo _TapTicketsInfo;
-    public PlayerInfo _PlayerInfo;
+    [SerializeField]
+    PlayerLevel _PlayerLevel;
 
     public Text Referral1UI;
     public Text Referral2UI;
@@ -281,8 +282,8 @@ public class PlayFabManager : MonoBehaviour
 
                         _TapTicketsInfo = JsonConvert.DeserializeObject<TapTicketsInfo >(result.Data["TapTicketsInfo"].Value);
                         UIManager.Instance.UpdateUITapTickets();
-                        _PlayerInfo = JsonConvert.DeserializeObject<PlayerInfo>(result.Data["PlayerInfo"].Value);
-
+                        _PlayerLevel = JsonConvert.DeserializeObject<PlayerLevel>(result.Data["PlayerLevel"].Value);
+                        LevelManager.Instance.SetLevelInfos(_PlayerLevel);
                         _PlayerReferral = JsonConvert.DeserializeObject<PlayerReferral>(result.Data["PlayerReferral"].Value);
                         if (_PlayerReferral.TotalFirstReferrals > 0 && GameManager.Instance._PlayerGameDataProtected.OwnedBoosterPacks.Count > 0)
                         {
@@ -586,15 +587,16 @@ public class PlayFabManager : MonoBehaviour
                 NewReferralTapTickets = 0,
                 CurrentTapTickets = 0
             } ;
-            _PlayerInfo = new PlayerInfo{
-                Level = 1, 
-                Experience = 0,
-                RequiredExperience = 100
+            _PlayerLevel = new PlayerLevel{
+                CurrentLevel = 1, 
+                BaseXP = 50,
+                CurrentXP = 0,
+                RequiredXP = 50
             } ;
-
+            LevelManager.Instance.SetLevelInfos(_PlayerLevel);
             string serial_PlayerReferral = JsonConvert.SerializeObject(_PlayerReferral);
             string serial_TapTicketsInfo = JsonConvert.SerializeObject(_TapTicketsInfo);
-            string serial_PlayerInfo = JsonConvert.SerializeObject(_PlayerInfo);
+            string serial_PlayerLevel = JsonConvert.SerializeObject(_PlayerLevel);
 
             var request = new UpdateUserDataRequest
             {
@@ -603,7 +605,7 @@ public class PlayFabManager : MonoBehaviour
                     { "PlayerGameData",  serial },
                     { "PlayerReferral",  serial_PlayerReferral },
                     { "TapTicketsInfo",  serial_TapTicketsInfo },
-                    { "PlayerInfo",  serial_PlayerInfo },
+                    { "PlayerLevel",  serial_PlayerLevel },
                     { "BoughtFirstBooster",  "false" },
                     { "ReferredBy",  "" },
                 }

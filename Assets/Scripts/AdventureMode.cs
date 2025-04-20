@@ -55,6 +55,7 @@ public class AdventureMode : MonoBehaviour
         Instance = this;
         
     }
+    [ContextMenu("GameCompleted")]
     public void GameCompleted()
     {
         LevelManager.Instance.XPGain(completionXPGain);

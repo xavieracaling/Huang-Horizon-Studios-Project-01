@@ -3,13 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 using GUPS.AntiCheat.Protected;
-[Serializable]
-public class PlayerInfo
-{
-    public int Level;
-    public int Experience;
-    public int RequiredExperience;
-}
+
 [Serializable]
 
 public class TapTicketsInfo

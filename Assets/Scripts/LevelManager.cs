@@ -4,13 +4,31 @@ using System;
 using UnityEngine;
 using GUPS.AntiCheat.Protected;
 using Unity.VisualScripting;
-
+using PlayFab.ClientModels;
+using PlayFab;
+using Newtonsoft.Json;
+[Serializable]
+public class GetXPResult
+{
+    public bool IsLevelUp;
+    public string PlayerLevelInfo;
+}
+[Serializable]
+public class PlayerLevel
+{
+    public int CurrentLevel;
+    public int BaseXP;
+    public int CurrentXP;
+    public int RequiredXP;
+}
 public class LevelManager : MonoBehaviour
 {
     public static LevelManager Instance;
     public List<LevelXPBar> LevelXPBars = new List<LevelXPBar>();
     public  Action LevelValuesSync;
     public int XPGainTest;
+    [SerializeField]
+    PlayerLevel _playerLevel;
     [Header("Values")]
     ProtectedInt32 currentLevel;
     ProtectedInt32 baseXP;
@@ -60,7 +78,7 @@ public class LevelManager : MonoBehaviour
     }
     void Start()
     {
-        TestInit();
+        //TestInit();
     }
     
     [ContextMenu("TestXPGain")]
@@ -78,16 +96,52 @@ public class LevelManager : MonoBehaviour
 
     public void XPGain(int xpGain)
     {
-        float expected = CurrentXP +  xpGain;
-        if (expected >=  RequiredXP)
+        var request = new ExecuteCloudScriptRequest
         {
-            RequiredXP += 150;
-            CurrentLevel++;
-        }
-        CurrentXP += xpGain;
+            FunctionName = "getXP",
+            FunctionParameter = new {
+                playerId = PlayFabManager.Instance.PlayFabID
+            }
+        };
+        
+        PlayFabClientAPI.ExecuteCloudScript(request,result => {
+            Debug.Log("xp gain cloud!");
+            var json = result.FunctionResult.ToString();
+            Debug.Log($"getXPResult : {json}");
+
+            var getXPResult = JsonUtility.FromJson<GetXPResult>(json);
+            
+            _playerLevel = JsonUtility.FromJson<PlayerLevel>(getXPResult.PlayerLevelInfo);
+
+            if (getXPResult.IsLevelUp)
+            {
+                RequiredXP = _playerLevel.RequiredXP;
+                CurrentLevel = _playerLevel.CurrentLevel;
+            }
+            CurrentXP = _playerLevel.CurrentXP;
+            
+        }, error => Debug.Log("error")) ;
+
+
+
+        // float expected = CurrentXP +  xpGain;
+        // if (expected >=  RequiredXP)
+        // {
+        //     RequiredXP += 150;
+        //     CurrentLevel++;
+        // }
+        // CurrentXP += xpGain;
         
     }
-   
+    public void SetLevelInfos(PlayerLevel playerLevel)
+    {
+        _playerLevel = playerLevel;
+
+        CurrentLevel =  _playerLevel.CurrentLevel;
+        BaseXP =  _playerLevel.BaseXP;
+        CurrentXP =  _playerLevel.CurrentXP;
+        RequiredXP =  _playerLevel.RequiredXP;
+    }
     public void SyncValuesCurrentLevel()
     {
         foreach (var item in LevelXPBars)

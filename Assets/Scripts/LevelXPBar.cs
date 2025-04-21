@@ -40,18 +40,18 @@ public class LevelXPBar : MonoBehaviour
             int oldXP = currentXP;
             currentXP = value;
             ExpProgress?.Invoke();
-            sliderAnimationSync(oldRequiredXP,oldXP,true);
+            sliderAnimationSync(OldRequiredXP,oldXP,true);
         }
     }
     public ProtectedInt32 RequiredXP {
         get => requiredXP;
         set
         {
-            oldRequiredXP = requiredXP;
+            OldRequiredXP = requiredXP;
             requiredXP = value;
         }
     }
-    public int oldRequiredXP;
+    public int OldRequiredXP;
     Coroutine CxpSliderAnimation;
     void Awake()
     {
@@ -60,7 +60,7 @@ public class LevelXPBar : MonoBehaviour
     void OnEnable()
     {
         ExpProgress?.Invoke();
-        oldRequiredXP = RequiredXP;
+        OldRequiredXP = RequiredXP;
         sliderAnimationSync(RequiredXP,CurrentXP, false);
     }
     void Start()
@@ -85,26 +85,23 @@ public class LevelXPBar : MonoBehaviour
     IEnumerator IxpSliderAnimation(int currentRequiredXP,int oldCurrentXP,bool animate = true,float duration = 0.8f)
     {
         float newXP = (float)CurrentXP;
-        Debug.Log($"newXP 1 {newXP}" );
-        
+
         float target = (float)newXP / (float)currentRequiredXP;
         if (animate) // doing a lot of tempo
         {
             int tempoRequiredXP = currentRequiredXP;
-            
-            if (CurrentXP >= tempoRequiredXP)
+
+            if (RequiredXP != OldRequiredXP)
             {
-                newXP =  newXP - (newXP - tempoRequiredXP ) ;
+                newXP =  currentRequiredXP ;
                 CurrentLevelUI.text = $"LEVEL: {CurrentLevel - 1}" ;
                 target = (float)newXP / (float)currentRequiredXP;
             }
 
-            //Debug.Log($"newXP 2 {newXP}" );
 
             float startValue = XPSlider.value;
             float elapsedTime = 0f;
             float currentXP = 0;
-            //Debug.Log($"animate oldCurrentXP {oldCurrentXP}, currentRequiredXP {currentRequiredXP}, newXP {newXP}, target {target}" );
 
             while (elapsedTime < duration)
             {
@@ -112,33 +109,37 @@ public class LevelXPBar : MonoBehaviour
                 float t = elapsedTime / duration;
 
                 XPSlider.value = Mathf.Lerp(startValue, target, t);
-
                 currentXP = Mathf.Lerp(oldCurrentXP, newXP, t);
                 XPCurrentMaxUI.text = $"{(int)currentXP}/{tempoRequiredXP}";
-          //      Debug.Log($"1 animate oldCurrentXP {oldCurrentXP}, currentRequiredXP {currentRequiredXP}, newXP {newXP}, target {target}" );
 
                 yield return null;
             }
             XPSlider.value = target;
-            
-            if (CurrentXP >= tempoRequiredXP)
+
+            if (RequiredXP != OldRequiredXP) // leveled up
             {
-                oldRequiredXP = RequiredXP;
+                OldRequiredXP = RequiredXP;
                 CurrentLevelUI.text = $"LEVEL: {CurrentLevel}" ;
                 XPCurrentMaxUI.text = $"{CurrentXP}/{RequiredXP}";
                 XPSlider.value = 0;
-                
-                int _oldXP = (int)currentXP;
-                sliderAnimationSync(RequiredXP,_oldXP,true,0.5f); // level up
+
+                UIManager.Instance.MainMenuBTNGO.SetActive(false);
+                UIManager.Instance.InstantiateLevelupMessagerPop(CurrentLevel,LevelManager.Instance.LatestGetXPResult.TapTicketsEarned);
+                PlayFabManager.Instance._TapTicketsInfo.CurrentTapTickets += LevelManager.Instance.LatestGetXPResult.TapTicketsEarned;
+                UIManager.Instance.UpdateUITapTickets();
+
+                int _oldXP = 0;
+                if (CurrentXP > 0)
+                {
+                    sliderAnimationSync(RequiredXP,_oldXP,true,0.5f); // level up
+                }
 
             }
-           // Debug.Log("animate done");
 
         }
         else
         {
             XPSlider.value = target;
-            Debug.Log("not animate");
 
         }
     }

@@ -12,6 +12,7 @@ public class GetXPResult
 {
     public bool IsLevelUp;
     public string PlayerLevelInfo;
+    public int TapTicketsEarned;
 }
 [Serializable]
 public class PlayerLevel
@@ -72,6 +73,7 @@ public class LevelManager : MonoBehaviour
     public int ShowableCurrentLevel;
     public int ShowableCurrentXP;
     public int ShowableRequiredXP;
+    public GetXPResult LatestGetXPResult;
     void Awake()
     {
         Instance = this;
@@ -105,13 +107,12 @@ public class LevelManager : MonoBehaviour
         };
         
         PlayFabClientAPI.ExecuteCloudScript(request,result => {
-            Debug.Log("xp gain cloud!");
             var json = result.FunctionResult.ToString();
-            Debug.Log($"getXPResult : {json}");
 
             var getXPResult = JsonUtility.FromJson<GetXPResult>(json);
             
             _playerLevel = JsonUtility.FromJson<PlayerLevel>(getXPResult.PlayerLevelInfo);
+            LatestGetXPResult = getXPResult;
 
             if (getXPResult.IsLevelUp)
             {
@@ -122,16 +123,6 @@ public class LevelManager : MonoBehaviour
             
         }, error => Debug.Log("error")) ;
 
-
-
-        // float expected = CurrentXP +  xpGain;
-        // if (expected >=  RequiredXP)
-        // {
-        //     RequiredXP += 150;
-        //     CurrentLevel++;
-        // }
-        // CurrentXP += xpGain;
-        
     }
     public void SetLevelInfos(PlayerLevel playerLevel)
     {
@@ -139,8 +130,9 @@ public class LevelManager : MonoBehaviour
 
         CurrentLevel =  _playerLevel.CurrentLevel;
         BaseXP =  _playerLevel.BaseXP;
-        CurrentXP =  _playerLevel.CurrentXP;
+        
         RequiredXP =  _playerLevel.RequiredXP;
+        CurrentXP =  _playerLevel.CurrentXP;
     }
     public void SyncValuesCurrentLevel()
     {

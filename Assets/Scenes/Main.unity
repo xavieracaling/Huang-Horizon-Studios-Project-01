@@ -2616,6 +2616,7 @@ GameObject:
   - component: {fileID: 162042175}
   - component: {fileID: 162042174}
   - component: {fileID: 162042176}
+  - component: {fileID: 162042177}
   m_Layer: 5
   m_Name: Adventure
   m_TagString: Untagged
@@ -2713,6 +2714,23 @@ Canvas:
   m_SortingLayerID: 0
   m_SortingOrder: 2
   m_TargetDisplay: 0
+--- !u!114 &162042177
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 162042172}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dc42784cf147c0c48a680349fa168899, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_IgnoreReversedGraphics: 1
+  m_BlockingObjects: 0
+  m_BlockingMask:
+    serializedVersion: 2
+    m_Bits: 4294967295
 --- !u!1 &163811078
 GameObject:
   m_ObjectHideFlags: 0
@@ -4221,7 +4239,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &281508615
 RectTransform:
   m_ObjectHideFlags: 0
@@ -7836,10 +7854,11 @@ MonoBehaviour:
   _TapTicketsInfo:
     NewReferralTapTickets: 0
     CurrentTapTickets: 0
-  _PlayerInfo:
-    Level: 0
-    Experience: 0
-    RequiredExperience: 0
+  _PlayerLevel:
+    CurrentLevel: 0
+    BaseXP: 0
+    CurrentXP: 0
+    RequiredXP: 0
   Referral1UI: {fileID: 1794501358}
   Referral2UI: {fileID: 1794501357}
   ReferredBy: 
@@ -11532,6 +11551,7 @@ MonoBehaviour:
   XPSlider: {fileID: 1396822904}
   XPCurrentMaxUI: {fileID: 233001673}
   CurrentLevelUI: {fileID: 1420618017}
+  OldRequiredXP: 0
 --- !u!1 &710747666
 GameObject:
   m_ObjectHideFlags: 0
@@ -11980,6 +12000,14 @@ MonoBehaviour:
   - {fileID: 710719702}
   - {fileID: 967657130}
   XPGainTest: 25
+  _playerLevel:
+    CurrentLevel: 0
+    BaseXP: 0
+    CurrentXP: 0
+    RequiredXP: 0
+  ShowableCurrentLevel: 0
+  ShowableCurrentXP: 0
+  ShowableRequiredXP: 0
 --- !u!1 &722879733
 GameObject:
   m_ObjectHideFlags: 0
@@ -15185,6 +15213,7 @@ MonoBehaviour:
   ReferralTicketsMessengerPopsagerPopPrefab: {fileID: 9183848910647777737, guid: a30dd5f7df1ba2542bee15a06577ae02, type: 3}
   EarnedReferralTicketsMessengerPopsagerPopPrefab: {fileID: 9183848910647777737, guid: 06248f5e1dd0d854baa1527835dfab5f, type: 3}
   TenReferralTicketsMessengerPopsagerPopPrefab: {fileID: 9183848910647777737, guid: ae69d4f14a6cb9a47ae7d9113913aa21, type: 3}
+  LevelupMessengerPopsagerPopPrefab: {fileID: 3335246971990264272, guid: 2afb8b03a7752294b9d2a718fe0ad8ee, type: 3}
   Container: {fileID: 1367654575}
   ScrollRect_CategoryShop: {fileID: 1623014202}
   ListCategoriesShopG:
@@ -15198,6 +15227,7 @@ MonoBehaviour:
   ListTapTicketsUI:
   - {fileID: 1479066309}
   - {fileID: 703029030}
+  MainMenuBTNGO: {fileID: 1457107300}
 --- !u!1 &895363490
 GameObject:
   m_ObjectHideFlags: 0
@@ -17099,6 +17129,7 @@ MonoBehaviour:
   XPSlider: {fileID: 1271837553}
   XPCurrentMaxUI: {fileID: 648539904}
   CurrentLevelUI: {fileID: 362341931}
+  OldRequiredXP: 0
 --- !u!1 &979152701
 GameObject:
   m_ObjectHideFlags: 0

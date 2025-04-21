@@ -7,6 +7,14 @@ using UnityEngine.UI;
 using Newtonsoft.Json;
 using GUPS.AntiCheat.Protected;
 using System;
+using PlayFab.ClientModels;
+using PlayFab;
+public class CheckLevelUnlockInfo
+{
+    public bool UnlockedLevel;
+    public int MyCurrentTotalReferrals;
+    public int RequiredTotalReferrals;
+}
 public class GameManager : MonoBehaviour
 {
     public Coroutine IStartSpawnRushers;
@@ -61,10 +69,39 @@ public class GameManager : MonoBehaviour
 
     public void StartGameAdventure() => PlayFabManager.Instance.ExecuteWithSessionCheck( () => 
     {
-        CurrentMode = Modes.Adventure;
-        GameContainer.SetActive(true);
-        GameContainer_BoosterMode.SetActive(false);
-        GameContainer_Adventure.SetActive(true);
+        GameObject loading = UIManager.Instance.LoadingShow();
+        loading.transform.SetAsLastSibling();
+        var request = new ExecuteCloudScriptRequest
+        {
+            FunctionName = "checkLevelUnlock",
+            FunctionParameter = new {
+                playerId =  PlayFabManager.Instance.PlayFabID
+            }
+        };
+        PlayFabClientAPI.ExecuteCloudScript(request,result => 
+        {
+            
+            CheckLevelUnlockInfo checkLevelUnlockInfo = JsonConvert.DeserializeObject<CheckLevelUnlockInfo> (result.FunctionResult.ToString());
+            if (!checkLevelUnlockInfo.UnlockedLevel)
+            {
+                Destroy(loading);
+                UIManager.Instance.InstantiateMessagerPopPrefab_Message(
+                    $"Unable to enter.\n \n To continue leveling from <color=#00FF00>{LevelManager.Instance.CurrentLevel}</color>, you need at least <color=#00FF00>{checkLevelUnlockInfo.RequiredTotalReferrals}</color> Total Referrals. \n \n Right now you only have <color=#00FF00>{checkLevelUnlockInfo.MyCurrentTotalReferrals} </color> Total referrals "
+                );
+                return;
+            }
+            Destroy(loading);
+
+            CurrentMode = Modes.Adventure;
+            GameContainer.SetActive(true);
+            GameContainer_BoosterMode.SetActive(false);
+            GameContainer_Adventure.SetActive(true);
+
+               
+        }, error => { Destroy(loading); Debug.Log("error") ;}  );
+
+        
+        
     });
 
 

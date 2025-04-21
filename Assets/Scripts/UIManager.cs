@@ -22,12 +22,14 @@ public class UIManager : MonoBehaviour
     public ReferralTicketsMessengerPop ReferralTicketsMessengerPopsagerPopPrefab; 
     public ReferralTicketsMessengerPop EarnedReferralTicketsMessengerPopsagerPopPrefab; 
     public ReferralTicketsMessengerPop TenReferralTicketsMessengerPopsagerPopPrefab; 
+    public LevelUpMessagerPop LevelupMessengerPopsagerPopPrefab; 
     public Transform Container;
     public static UIManager Instance;
     public ScrollRect ScrollRect_CategoryShop;
     public List<GameObject> ListCategoriesShopG = new List<GameObject>();
     public List<GameObject> ListCategoriesT = new List<GameObject>();
     public List<Text> ListTapTicketsUI = new List<Text>();
+    public GameObject MainMenuBTNGO;
     void Awake()
     {
         Instance = this;
@@ -82,6 +84,12 @@ public class UIManager : MonoBehaviour
     {
         ReferralTicketsMessengerPop messagerPop = Instantiate(TenReferralTicketsMessengerPopsagerPopPrefab,Container);
         messagerPop.SetMessagerPop(msg);
+        messagerPop.transform.SetAsLastSibling();
+    }
+    public void InstantiateLevelupMessagerPop(int level, int tapTickets) 
+    {
+        LevelUpMessagerPop messagerPop = Instantiate(LevelupMessengerPopsagerPopPrefab,GameManager.Instance.GameContainer_Adventure.transform);
+        messagerPop.SetMessagerPop(level,tapTickets);
         messagerPop.transform.SetAsLastSibling();
     }
     public void InstantiateNewbieReferral() 

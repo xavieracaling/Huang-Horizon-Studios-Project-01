@@ -303,6 +303,8 @@ public class PlayFabManager : MonoBehaviour
                             PlayFabClientAPI.ExecuteCloudScript(request, success => {Debug.Log("Refreshed newTicketReferralRefresh");}, error => {Debug.Log("Error newTicketReferralRefresh");});
                         
                         }
+                        UIManager.Instance.ConnectedSceneUI();
+
 
                     }
                     catch (System.Exception)
@@ -315,7 +317,6 @@ public class PlayFabManager : MonoBehaviour
 
                     Debug.Log("Existing account logged in.");
                     PlayerName = result.InfoResultPayload?.AccountInfo?.TitleInfo?.DisplayName;
-                    UIManager.Instance.ConnectedSceneUI();
                 }
             },
             error =>

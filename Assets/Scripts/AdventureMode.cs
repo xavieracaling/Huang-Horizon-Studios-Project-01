@@ -13,18 +13,10 @@ public class AdventureMode : MonoBehaviour
     public Text CurrentClicksUI;
     public Text TimeCountdownUI;
     [Header("Values")]
-    ProtectedInt32 completionXPGain;
     ProtectedInt32 clicksRequired;
     ProtectedInt32 currentClicks;
     ProtectedInt32 timeCountdown;
-    public ProtectedInt32 CompletionXPGain {
-        get => completionXPGain;
-        set 
-        {
-            completionXPGain = value;
-            CompletionXPGainUI.text = completionXPGain.ToString();
-        } 
-    }
+  
     public ProtectedInt32 ClicksRequired {
         get => clicksRequired;
         set 
@@ -58,7 +50,7 @@ public class AdventureMode : MonoBehaviour
     [ContextMenu("GameCompleted")]
     public void GameCompleted()
     {
-        LevelManager.Instance.XPGain(completionXPGain);
+        LevelManager.Instance.XPGain();
     }
     
 }

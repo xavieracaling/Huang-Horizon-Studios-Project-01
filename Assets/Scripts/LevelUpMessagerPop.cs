@@ -17,6 +17,7 @@ public class LevelUpMessagerPop : MonoBehaviour
         {
             if (GameManager.Instance.CurrentMode == Modes.Adventure)
             {
+                LevelManager.Instance.LeveledUpPanel = false;
                 UIManager.Instance.MainMenuBTNGO.SetActive(true);
                 GameManager.Instance.GotoMenu();
             }

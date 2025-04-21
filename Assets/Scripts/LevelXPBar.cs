@@ -89,6 +89,7 @@ public class LevelXPBar : MonoBehaviour
         float target = (float)newXP / (float)currentRequiredXP;
         if (animate) // doing a lot of tempo
         {
+
             int tempoRequiredXP = currentRequiredXP;
 
             if (RequiredXP != OldRequiredXP)
@@ -115,19 +116,20 @@ public class LevelXPBar : MonoBehaviour
                 yield return null;
             }
             XPSlider.value = target;
-
             if (RequiredXP != OldRequiredXP) // leveled up
             {
                 OldRequiredXP = RequiredXP;
                 CurrentLevelUI.text = $"LEVEL: {CurrentLevel}" ;
                 XPCurrentMaxUI.text = $"{CurrentXP}/{RequiredXP}";
                 XPSlider.value = 0;
-
-                UIManager.Instance.MainMenuBTNGO.SetActive(false);
-                UIManager.Instance.InstantiateLevelupMessagerPop(CurrentLevel,LevelManager.Instance.LatestGetXPResult.TapTicketsEarned);
-                PlayFabManager.Instance._TapTicketsInfo.CurrentTapTickets += LevelManager.Instance.LatestGetXPResult.TapTicketsEarned;
-                UIManager.Instance.UpdateUITapTickets();
-
+                if (!LevelManager.Instance.LeveledUpPanel)
+                {
+                    LevelManager.Instance.LeveledUpPanel = true;
+                    UIManager.Instance.MainMenuBTNGO.SetActive(false);
+                    UIManager.Instance.InstantiateLevelupMessagerPop(CurrentLevel,LevelManager.Instance.LatestGetXPResult.TapTicketsEarned);
+                    PlayFabManager.Instance._TapTicketsInfo.CurrentTapTickets += LevelManager.Instance.LatestGetXPResult.TapTicketsEarned;
+                    UIManager.Instance.UpdateUITapTickets();
+                }
                 int _oldXP = 0;
                 if (CurrentXP > 0)
                 {

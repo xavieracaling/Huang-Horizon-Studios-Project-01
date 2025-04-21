@@ -74,6 +74,7 @@ public class LevelManager : MonoBehaviour
     public int ShowableCurrentXP;
     public int ShowableRequiredXP;
     public GetXPResult LatestGetXPResult;
+    public bool LeveledUpPanel;
     void Awake()
     {
         Instance = this;
@@ -86,7 +87,7 @@ public class LevelManager : MonoBehaviour
     [ContextMenu("TestXPGain")]
     public void TestXPGain()
     {
-        XPGain(XPGainTest);
+        XPGain();
     }
     public void TestInit()
     {
@@ -96,7 +97,7 @@ public class LevelManager : MonoBehaviour
         RequiredXP = 150;
     }
 
-    public void XPGain(int xpGain)
+    public void XPGain()
     {
         var request = new ExecuteCloudScriptRequest
         {

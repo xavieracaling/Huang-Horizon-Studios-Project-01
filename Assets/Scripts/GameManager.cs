@@ -14,6 +14,8 @@ public class CheckLevelUnlockInfo
     public bool UnlockedLevel;
     public int MyCurrentTotalReferrals;
     public int RequiredTotalReferrals;
+    public int MinXPGain;
+    public int MaxXPGain;
 }
 public class GameManager : MonoBehaviour
 {
@@ -92,6 +94,7 @@ public class GameManager : MonoBehaviour
             }
             Destroy(loading);
 
+            AdventureMode.Instance.CompletionXPGainUI.text = $"{checkLevelUnlockInfo.MinXPGain} XP - {checkLevelUnlockInfo.MaxXPGain} XP";
             CurrentMode = Modes.Adventure;
             GameContainer.SetActive(true);
             GameContainer_BoosterMode.SetActive(false);

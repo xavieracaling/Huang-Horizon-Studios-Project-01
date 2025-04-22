@@ -56,14 +56,15 @@ public class AdventureMode : MonoBehaviour
             TimeCountdownUI.text = $"{timeSpan.Minutes.ToString("D2")}:{timeSpan.Seconds.ToString("D2")}";
         } 
     }
-    public float MaxTime;
+    public ProtectedFloat MaxTime;
     TimeSpan timeSpan;
     public Vector2 CurrentIdleSize;
     public Vector2 NewIdleSize;
     public Image ImageIdle;
     Animator animatorIdle;
-    public bool GameOver;
+    public ProtectedBool GameOver;
     public Text GameOverUI;
+    public ProtectedBool GameStarted;
     void Awake()
     {
         Instance = this;
@@ -77,6 +78,10 @@ public class AdventureMode : MonoBehaviour
     }
     public void IdleClick()
     {
+        if (!GameStarted)
+        {
+            return;
+        }
         CurrentClicks++;
         if (!animatorIdle.GetBool("Jump"))
         {
@@ -126,7 +131,9 @@ public class AdventureMode : MonoBehaviour
     }
     public void SetAdventureModeState(int minXP, int maxXP, int requiredClicks, int time)
     {
+        GameStarted = false;
         ClearEnemies();
+        CurrentClicks = 0;
         GameManager.Instance.MainMenuGO.SetActive(true);
         GameOver = false;
         GameStartBTNGO.SetActive(true);
@@ -148,6 +155,7 @@ public class AdventureMode : MonoBehaviour
     [ContextMenu("GameStart")]
     public void GameStart()
     {
+        GameStarted = true;
         TimeCountdownUI.DOKill();
         TimeCountdownUI.DOFade(0,1.5f).SetLoops(-1,LoopType.Yoyo);
         TimeCountdownUI.DOColor(Color.red,1.2f).SetLoops(-1,LoopType.Yoyo);
@@ -166,6 +174,7 @@ public class AdventureMode : MonoBehaviour
             }
             yield return new WaitForSeconds(1);
         }
+        GameStarted = false;
         GameManager.Instance.MainMenuGO.SetActive(false);
         TimeCountdownUI.DOKill();
         TimeCountdownUI.DOFade(1,0.5f);

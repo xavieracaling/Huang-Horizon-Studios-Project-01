@@ -1,7 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+using UnityEngine.UI;
+using DG.Tweening;
 public class RusherAdventure : MonoBehaviour
 {
 
@@ -9,11 +10,31 @@ public class RusherAdventure : MonoBehaviour
     Animator animator;
     public float MoveSpeed =  198.8f;
     Transform target;
-    public SpriteRenderer SpriteRenderer;
+    public Image Image;
+    public bool Dead; 
+    Button button;
     void Start()
     {
         animator = GetComponent<Animator>();
         target = AdventureMode.Instance.PointCenter;
+        button = GetComponent<Button>();
+        Image = GetComponent<Image>();
+        button.onClick.AddListener(() => Tapped());
+    }
+    public void Tapped()
+    {
+        Vector2 currentSize = transform.localScale;
+        Vector2 newSize = transform.localScale * 1.5f;
+        transform.DOScale(newSize,0.2f).SetEase(Ease.OutSine).OnComplete(() => {
+             transform.DOScale(currentSize,0.15f).SetEase(Ease.OutSine);
+        });
+        animator.SetTrigger("Dead");
+        Dead= true;
+        Image.raycastTarget = false;
+    }
+    public void Die()
+    {
+        Destroy(gameObject);
     }
     void Update()
     {
@@ -21,7 +42,10 @@ public class RusherAdventure : MonoBehaviour
     }
     void MoveToTarget()
     {
-        
+        if (Dead)
+        {
+            return;
+        }
         // Direction to the target
         Vector2 direction = (target.position - transform.position).normalized;
         animator.speed = MoveSpeed / 198.8f;
@@ -37,6 +61,7 @@ public class RusherAdventure : MonoBehaviour
         float distanceSqr = (target.position - transform.position).sqrMagnitude;
         if (distanceSqr <= 0)
         {
+            AdventureMode.Instance.IdleGotDamaged();
             Destroy(gameObject);
         }
     }

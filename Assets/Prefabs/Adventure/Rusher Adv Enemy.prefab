@@ -28,13 +28,13 @@ RectTransform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 142359526112531896}
-  m_LocalRotation: {x: 0, y: 0, z: 0.3582213, w: 0.9336367}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1.3806305, y: 1.3806305, z: 1.3806304}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 41.982}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 897.867, y: 114.91878}
@@ -113,6 +113,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   AdventureRushersType: 0
   MoveSpeed: 198.8
+  Image: {fileID: 6649982139448070576}
+  Dead: 0
 --- !u!114 &1881669225215337940
 MonoBehaviour:
   m_ObjectHideFlags: 0

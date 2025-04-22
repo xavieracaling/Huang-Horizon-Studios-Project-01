@@ -66,7 +66,7 @@ public class GameManager : MonoBehaviour
         }
         else if (CurrentMode == Modes.Adventure)
         {
-            
+            AdventureMode.Instance.StopCoroutines();
         }
     }
     #region AdventureMode
@@ -92,6 +92,10 @@ public class GameManager : MonoBehaviour
                 UIManager.Instance.InstantiateMessagerPopPrefab_Message(
                     $"Unable to enter.\n \n To continue leveling from <color=#00FF00>{LevelManager.Instance.CurrentLevel}</color>, you need at least <color=#00FF00>{checkLevelUnlockInfo.RequiredTotalReferrals}</color> Total Referrals. \n \n Right now you only have <color=#00FF00>{checkLevelUnlockInfo.MyCurrentTotalReferrals} </color> Total referrals "
                 );
+                if (CurrentMode == Modes.Adventure)
+                {
+                    GotoMenu();
+                }
                 return;
             }
             Destroy(loading);

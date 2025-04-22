@@ -42,7 +42,7 @@ public class RusherAdventure : MonoBehaviour
     }
     void MoveToTarget()
     {
-        if (Dead)
+        if (Dead || AdventureMode.Instance.GameOver)
         {
             return;
         }

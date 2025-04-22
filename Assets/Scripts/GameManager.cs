@@ -16,6 +16,8 @@ public class CheckLevelUnlockInfo
     public int RequiredTotalReferrals;
     public int MinXPGain;
     public int MaxXPGain;
+    public int RequiredClicks;
+    public int TimeCountdown;
 }
 public class GameManager : MonoBehaviour
 {
@@ -93,8 +95,7 @@ public class GameManager : MonoBehaviour
                 return;
             }
             Destroy(loading);
-
-            AdventureMode.Instance.CompletionXPGainUI.text = $"{checkLevelUnlockInfo.MinXPGain} XP - {checkLevelUnlockInfo.MaxXPGain} XP";
+            AdventureMode.Instance.SetAdventureModeState(checkLevelUnlockInfo.MinXPGain, checkLevelUnlockInfo.MaxXPGain,checkLevelUnlockInfo.RequiredClicks, checkLevelUnlockInfo.TimeCountdown);
             CurrentMode = Modes.Adventure;
             GameContainer.SetActive(true);
             GameContainer_BoosterMode.SetActive(false);

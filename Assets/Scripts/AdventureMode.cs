@@ -113,8 +113,8 @@ public class AdventureMode : MonoBehaviour
     public void GameStart()
     {
         TimeCountdownUI.DOKill();
-        TimeCountdownUI.DOFade(0,0.5f).SetLoops(-1,LoopType.Yoyo);
-        TimeCountdownUI.DOColor(Color.red,0.3f).SetLoops(-1,LoopType.Yoyo);
+        TimeCountdownUI.DOFade(0,1.5f).SetLoops(-1,LoopType.Yoyo);
+        TimeCountdownUI.DOColor(Color.red,1.2f).SetLoops(-1,LoopType.Yoyo);
         if (CTimeStarted != null)
         {
             StopCoroutine(CTimeStarted);

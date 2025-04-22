@@ -134,7 +134,7 @@ public class AdventureMode : MonoBehaviour
         GameStarted = false;
         ClearEnemies();
         CurrentClicks = 0;
-        GameManager.Instance.MainMenuGO.SetActive(true);
+        UIManager.Instance.MainMenuBTNGO.SetActive(true);
         GameOver = false;
         GameStartBTNGO.SetActive(true);
         ImageIdle.color = Color.white;
@@ -175,7 +175,7 @@ public class AdventureMode : MonoBehaviour
             yield return new WaitForSeconds(1);
         }
         GameStarted = false;
-        GameManager.Instance.MainMenuGO.SetActive(false);
+        UIManager.Instance.MainMenuBTNGO.SetActive(false);
         TimeCountdownUI.DOKill();
         TimeCountdownUI.DOFade(1,0.5f);
         TimeCountdownUI.DOColor(Color.red,0.3f);

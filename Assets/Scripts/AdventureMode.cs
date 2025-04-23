@@ -83,6 +83,7 @@ public class AdventureMode : MonoBehaviour
             return;
         }
         CurrentClicks++;
+        IdlePopupClicks.Instance.ShowPopup(true);
         if (!animatorIdle.GetBool("Jump"))
         {
             animatorIdle.SetTrigger("Jump");
@@ -109,10 +110,12 @@ public class AdventureMode : MonoBehaviour
             return;
         }
         CurrentClicks--;
+        IdlePopupClicks.Instance.ShowPopup(false);
         if (CurrentClicks <= 0)
         {
             CurrentClicks = 0;
         }
+        
         ImageIdle.DOKill();
         ImageIdle.DOColor(Color.red, 0.5f)
         .SetLoops(2, LoopType.Yoyo)

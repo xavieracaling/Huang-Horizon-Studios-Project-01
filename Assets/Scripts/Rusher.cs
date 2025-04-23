@@ -17,6 +17,7 @@ public class Rusher : MonoBehaviour
         button = GetComponent<UnityEngine.UI.Button>();
         button.onClick.AddListener(() => 
         {
+            UISoundManager.Instance.PlayRusher();
             // GameManager.Instance.TestAvailClicks -= 1;
             PlayerBoosterPackProtected playerBoosterPackProtected = GameManager.Instance.CurrentUsedPlayerBoosterPackProtected;
             GameManager.Instance.CurrentUsedPlayerBoosterPackProtected.AvailableClicks -= 1;

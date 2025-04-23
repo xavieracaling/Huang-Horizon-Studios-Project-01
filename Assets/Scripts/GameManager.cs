@@ -89,8 +89,10 @@ public class GameManager : MonoBehaviour
             if (!checkLevelUnlockInfo.UnlockedLevel)
             {
                 Destroy(loading);
-                UIManager.Instance.InstantiateMessagerPopPrefab_Message(
+                UIManager.Instance.InstantiateMessagerPopPrefabFull(
                     $"Unable to enter.\n \n To continue leveling from <color=#00FF00>{LevelManager.Instance.CurrentLevel}</color>, you need at least <color=#00FF00>{checkLevelUnlockInfo.RequiredTotalReferrals}</color> Total Referrals. \n \n Right now you only have <color=#00FF00>{checkLevelUnlockInfo.MyCurrentTotalReferrals} </color> Total referrals "
+                ,
+                () => AdventureMode.Instance.ReferralPanel.SetActive(true),false
                 );
                 if (CurrentMode == Modes.Adventure)
                 {
@@ -230,8 +232,8 @@ public class GameManager : MonoBehaviour
                 randomXStartPos =  UnityEngine.Random.Range(-987,-605);
                 yPosStarting = -48;
             }
-            int rand =  UnityEngine.Random.Range(0,2);
-            if(rand == 1)
+            int rand =  UnityEngine.Random.Range(0,101);
+            if(rand >  GameManager.Instance.CurrentUsedPlayerBoosterPackProtected.ClickRate.Win )
             {
                 Rusher _rusher = rusher.GetComponent<Rusher>();
                 _rusher.Explode = true;

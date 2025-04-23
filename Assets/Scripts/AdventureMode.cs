@@ -9,6 +9,7 @@ using Unity.Mathematics;
 public class AdventureMode : MonoBehaviour
 {
     public static AdventureMode Instance;
+    public GameObject ReferralPanel;
     public GameObject GameStartBTNGO;
     public Transform EnemyContainer;
     public Transform PointCenter;
@@ -83,6 +84,8 @@ public class AdventureMode : MonoBehaviour
         {
             return;
         }
+        UISoundManager.Instance.PlayIdle();
+
         CurrentClicks++;
         IdlePopupClicks.Instance.ShowPopup(true);
         if (!animatorIdle.GetBool("Jump"))
@@ -165,7 +168,87 @@ public class AdventureMode : MonoBehaviour
         TimeCountdownUI.DOColor(Color.red,1.2f).SetLoops(-1,LoopType.Yoyo);
         StopCoroutines();
         CTimeStarted = StartCoroutine(ITimeStarted());
-        CSpawnEnemies = StartCoroutine(ISpawnEnemies(1.5f,0.2f));
+        if (LevelManager.Instance.CurrentLevel <= 10)
+        {
+            CSpawnEnemies = StartCoroutine(ISpawnEnemies(1.3f,0.2f));
+        }
+        else if (LevelManager.Instance.CurrentLevel <= 30)
+        {
+            CSpawnEnemies = StartCoroutine(ISpawnEnemies(1.1f,0.19f));
+        }
+        else if (LevelManager.Instance.CurrentLevel <= 60)
+        {
+            CSpawnEnemies = StartCoroutine(ISpawnEnemies(1.0f,0.185f));
+        }
+        else if (LevelManager.Instance.CurrentLevel <= 100)
+        {
+            CSpawnEnemies = StartCoroutine(ISpawnEnemies(0.9f,0.185f));
+        }
+        else if (LevelManager.Instance.CurrentLevel <= 110)
+        {
+            CSpawnEnemies = StartCoroutine(ISpawnEnemies(0.88f,0.185f));
+        }
+        else if (LevelManager.Instance.CurrentLevel <= 130)
+        {
+            CSpawnEnemies = StartCoroutine(ISpawnEnemies(0.85f,0.185f));
+        }
+        else if (LevelManager.Instance.CurrentLevel <= 160)
+        {
+            CSpawnEnemies = StartCoroutine(ISpawnEnemies(0.84f,0.185f));
+        }
+        else if (LevelManager.Instance.CurrentLevel <= 200)
+        {
+            CSpawnEnemies = StartCoroutine(ISpawnEnemies(0.83f,0.185f));
+        }
+        else if (LevelManager.Instance.CurrentLevel <= 210)
+        {
+            CSpawnEnemies = StartCoroutine(ISpawnEnemies(0.82f,0.185f));
+        }
+        else if (LevelManager.Instance.CurrentLevel <= 230)
+        {
+            CSpawnEnemies = StartCoroutine(ISpawnEnemies(0.81f,0.185f));
+        }
+        else if (LevelManager.Instance.CurrentLevel <= 260)
+        {
+            CSpawnEnemies = StartCoroutine(ISpawnEnemies(0.80f,0.185f));
+        }
+        else if (LevelManager.Instance.CurrentLevel <= 300)
+        {
+            CSpawnEnemies = StartCoroutine(ISpawnEnemies(0.79f,0.185f));
+        }
+        else if (LevelManager.Instance.CurrentLevel <= 310)
+        {
+            CSpawnEnemies = StartCoroutine(ISpawnEnemies(0.77f,0.185f));
+        }
+        else if (LevelManager.Instance.CurrentLevel <= 330)
+        {
+            CSpawnEnemies = StartCoroutine(ISpawnEnemies(0.76f,0.185f));
+        }
+        else if (LevelManager.Instance.CurrentLevel <= 360)
+        {
+            CSpawnEnemies = StartCoroutine(ISpawnEnemies(0.75f,0.185f));
+        }
+        else if (LevelManager.Instance.CurrentLevel <= 400)
+        {
+            CSpawnEnemies = StartCoroutine(ISpawnEnemies(0.74f,0.185f));
+        }
+        else if (LevelManager.Instance.CurrentLevel <= 410)
+        {
+            CSpawnEnemies = StartCoroutine(ISpawnEnemies(0.73f,0.185f));
+        }
+        else if (LevelManager.Instance.CurrentLevel <= 430)
+        {
+            CSpawnEnemies = StartCoroutine(ISpawnEnemies(0.72f,0.185f));
+        }
+        else if (LevelManager.Instance.CurrentLevel <= 460)
+        {
+            CSpawnEnemies = StartCoroutine(ISpawnEnemies(0.71f,0.185f));
+        }
+        else if (LevelManager.Instance.CurrentLevel <= 500)
+        {
+            CSpawnEnemies = StartCoroutine(ISpawnEnemies(0.5f,0.185f));
+        }
+
     }
     public IEnumerator ITimeStarted()
     {
@@ -197,10 +280,12 @@ public class AdventureMode : MonoBehaviour
             GameOverUI.color = Color.green;
             GameOverUI.text = "GAME COMPLETED";
             win = true;
+            UISoundManager.Instance.PlayWin();
         }
         else
         {
             GameOverUI.color = Color.red;
+            UISoundManager.Instance.PlayLose();
             GameOverUI.text = "GAME INCOMPLETE";
         }
         ClearEnemies();

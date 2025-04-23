@@ -285,7 +285,7 @@ public class PlayFabManager : MonoBehaviour
                         _PlayerLevel = JsonConvert.DeserializeObject<PlayerLevel>(result.Data["PlayerLevel"].Value);
                         LevelManager.Instance.SetLevelInfos(_PlayerLevel);
                         _PlayerReferral = JsonConvert.DeserializeObject<PlayerReferral>(result.Data["PlayerReferral"].Value);
-                        if (_PlayerReferral.TotalFirstReferrals > 0 && GameManager.Instance._PlayerGameDataProtected.OwnedBoosterPacks.Count > 0)
+                        if (_PlayerReferral.TotalReferrals > 0 && GameManager.Instance._PlayerGameDataProtected.OwnedBoosterPacks.Count > 0)
                         {
                             RefreshReferrals();
                         }
@@ -356,7 +356,9 @@ public class PlayFabManager : MonoBehaviour
             break;
         }
         _mult +=  _PlayerReferral.TotalReferralMultiplier; 
+       // _mult +=  3333; 
         _mult = Mathf.Clamp(_mult,0,_max); 
+       // Debug.Log($"_mult {_mult} and {_PlayerReferral.TotalReferralMultiplier}");
         return _mult;
     }
     public void DeletePlayerBooster(PlayerBoosterPackProtected playerBoosterPackProtected, Action action= null)
@@ -453,7 +455,7 @@ public class PlayFabManager : MonoBehaviour
             ID =  newID,
             DailyTimeExpire = 24, // like 24 hours, resets all avail clicks
             CurrentMultiplier = currentMultiplier,
-            BNBEarnPerClick = ((boosterPackProtected.Price * currentMultiplier) / 14) / 50, //14 = days , 50 =  times
+           
             AvailableClicks = 50,
             TotalBNBEarned = 0,
             
@@ -472,6 +474,7 @@ public class PlayFabManager : MonoBehaviour
             FinalTimeExpire = (int) boosterPackProtected.FinalTimeExpire, 
             OriginalMultiplier = (float) boosterPackProtected.OriginalMultiplier
         };
+        playerBoosterPackProtected.BNBEarnPerClick = ((boosterPackProtected.Price * currentMultiplier) / playerBoosterPackProtected.FinalTimeExpire) / 50; //14 = days , 50 =  times
         PlayerGameDataUnProtected playerGameDataUnProtected = GameManager.Instance._PlayerGameDataProtected.ConvertToPlayerGameDataUnProtected();
         playerGameDataUnProtected.OwnedBoosterPacksUnProtected.Add(playerBoosterPackProtected);
 
@@ -539,12 +542,14 @@ public class PlayFabManager : MonoBehaviour
     }
     public void RefreshReferrals()
     {
+        Debug.Log($"RefreshReferrals 1");
+
         PlayerGameDataUnProtected playerGameDataUnProtected = GameManager.Instance._PlayerGameDataProtected.ConvertToPlayerGameDataUnProtected();
         foreach (var item in playerGameDataUnProtected.OwnedBoosterPacksUnProtected)
         {
             float currentMultiplier =GetMultiplier(item.BoosterPacksTypes);
             item.CurrentMultiplier = currentMultiplier;
-            item.BNBEarnPerClick = ((item.Price * currentMultiplier) / 14) / 50; //14 = days , 50 =  times
+            item.BNBEarnPerClick = ((item.Price * currentMultiplier) / item.FinalTimeExpire) / 50; //14 = days , 50 =  times
         }
         GameManager.Instance._PlayerGameDataProtected = playerGameDataUnProtected.ConvertToPlayerGameDataProtected();
 
@@ -559,6 +564,7 @@ public class PlayFabManager : MonoBehaviour
         
         PlayFabClientAPI.UpdateUserData(request, result =>
         {
+            Debug.Log($"RefreshReferrals 2");
             Debug.Log($"Player GameData updated successfully. {LoginStateSession} ");
         }, error =>
         {

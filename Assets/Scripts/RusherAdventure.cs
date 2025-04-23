@@ -32,12 +32,12 @@ public class RusherAdventure : MonoBehaviour
     }
     public void Tapped()
     {
-        
+        UISoundManager.Instance.PlayRusher();
         transform.DOKill();
         if (TapTimes == 1)
         {
             animator.ResetTrigger("GotHurt");
-            
+
             transform.DOScale(newSize,0.2f).SetEase(Ease.OutSine).OnComplete(() => {
                 transform.DOScale(currentSize,0.15f).SetEase(Ease.OutSine);
             });

@@ -111,11 +111,11 @@ public class AdventureMode : MonoBehaviour
             return;
         }
         CurrentClicks -= reduce;
-        IdlePopupClicks.Instance.ShowPopup(false);
         if (CurrentClicks <= 0)
         {
             CurrentClicks = 0;
         }
+        IdlePopupClicks.Instance.ShowPopup(false);
         
         ImageIdle.DOKill();
         ImageIdle.DOColor(Color.red, 0.5f)

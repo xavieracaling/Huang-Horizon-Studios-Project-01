@@ -12,7 +12,14 @@ public class RusherAdventure : MonoBehaviour
     Transform target;
     public Image Image;
     public bool Dead; 
+    public bool GotHurt; 
     Button button;
+    public int TapTimes = 1;
+    public int ReduceTimes = 1;
+    public GameObject FirstStar;
+    public GameObject SecondStar;
+    Vector2 currentSize ;
+    Vector2 newSize;
     void Start()
     {
         animator = GetComponent<Animator>();
@@ -20,17 +27,46 @@ public class RusherAdventure : MonoBehaviour
         button = GetComponent<Button>();
         Image = GetComponent<Image>();
         button.onClick.AddListener(() => Tapped());
+        currentSize = transform.localScale;
+        newSize = transform.localScale * 1.5f;
     }
     public void Tapped()
     {
-        Vector2 currentSize = transform.localScale;
-        Vector2 newSize = transform.localScale * 1.5f;
-        transform.DOScale(newSize,0.2f).SetEase(Ease.OutSine).OnComplete(() => {
-             transform.DOScale(currentSize,0.15f).SetEase(Ease.OutSine);
-        });
-        animator.SetTrigger("Dead");
-        Dead= true;
-        Image.raycastTarget = false;
+        
+        transform.DOKill();
+        if (TapTimes == 1)
+        {
+            animator.ResetTrigger("GotHurt");
+            
+            transform.DOScale(newSize,0.2f).SetEase(Ease.OutSine).OnComplete(() => {
+                transform.DOScale(currentSize,0.15f).SetEase(Ease.OutSine);
+            });
+            animator.SetTrigger("Dead");
+            Dead= true;
+            Image.raycastTarget = false;
+        }
+        else if (TapTimes == 2)
+        {
+            transform.DOScale(newSize,0.2f).SetEase(Ease.OutSine).OnComplete(() => {
+                transform.DOScale(currentSize,0.15f).SetEase(Ease.OutSine);
+            });
+            GotHurt = true;
+            animator.SetTrigger("GotHurt");
+        }
+        TapTimes --;
+    }
+    public void StarInit(int tap)
+    {
+        TapTimes = tap;
+        ReduceTimes = tap;
+        if (TapTimes == 1)
+        {
+            FirstStar.SetActive(true);
+        }
+        else if (TapTimes == 2)
+        {
+            SecondStar.SetActive(true);
+        }
     }
     public void Die()
     {
@@ -40,9 +76,13 @@ public class RusherAdventure : MonoBehaviour
     {
         MoveToTarget();
     }
+    public void DisableGotHurt()
+    {
+        GotHurt = false;
+    }
     void MoveToTarget()
     {
-        if (Dead || AdventureMode.Instance.GameOver)
+        if (Dead || AdventureMode.Instance.GameOver || GotHurt)
         {
             return;
         }
@@ -61,7 +101,7 @@ public class RusherAdventure : MonoBehaviour
         float distanceSqr = (target.position - transform.position).sqrMagnitude;
         if (distanceSqr <= 0)
         {
-            AdventureMode.Instance.IdleGotDamaged();
+            AdventureMode.Instance.IdleGotDamaged(ReduceTimes);
             Destroy(gameObject);
         }
     }

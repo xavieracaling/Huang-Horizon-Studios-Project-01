@@ -5,6 +5,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using System;
 using DG.Tweening;
+using Unity.Mathematics;
 public class AdventureMode : MonoBehaviour
 {
     public static AdventureMode Instance;
@@ -103,13 +104,13 @@ public class AdventureMode : MonoBehaviour
             StopCoroutine(CSpawnEnemies);
         }
     }
-    public void IdleGotDamaged()
+    public void IdleGotDamaged(int reduce = 1)
     {
         if (GameOver)
         {
             return;
         }
-        CurrentClicks--;
+        CurrentClicks -= reduce;
         IdlePopupClicks.Instance.ShowPopup(false);
         if (CurrentClicks <= 0)
         {
@@ -226,13 +227,27 @@ public class AdventureMode : MonoBehaviour
             {
                 GameObject enemy = Instantiate(ListEnemy[UnityEngine.Random.RandomRange(0,ListEnemy.Count)],ListEnemySpawnPoints[UnityEngine.Random.RandomRange(0,ListEnemySpawnPoints.Count)].position,Quaternion.identity,EnemyContainer);
                 RusherAdventure rusherAdventure = enemy.GetComponent<RusherAdventure>();
+                int rand = UnityEngine.Random.Range(0,2);
+                rusherAdventure.Image.color = ColorsRandomEnemy[UnityEngine.Random.RandomRange(0,ColorsRandomEnemy.Count)];
+
+                if (rand == 0)
+                {
+                    rusherAdventure.StarInit(1);
+                }
+                else if (rand == 1)
+                {
+                    rusherAdventure.StarInit(2);
+                }
+
+
                 AllEnemiesSpawned.Add(enemy);
+
                 float timeInterp = (float )TimeCountdown / MaxTime;
                 float newSpeed = Mathf.Lerp( 300,  198.8f,timeInterp);
                 float newSpawn = Mathf.Lerp( minSpawnTime ,  maxSpawnTime,timeInterp);
+                
                 MaxSpawnTest = newSpawn;
                 rusherAdventure.MoveSpeed = newSpeed;
-                rusherAdventure.Image.color = ColorsRandomEnemy[UnityEngine.Random.RandomRange(0,ColorsRandomEnemy.Count)];
                 currentSpawnTime = 0;
             }
             yield return null;

@@ -19,6 +19,6 @@ MonoBehaviour:
     <Symbol>k__BackingField: tBNB
     <Chain>k__BackingField: BNB Smart Chain Testnet
     <Network>k__BackingField: BSC
-    <Rpc>k__BackingField: https://data-seed-prebsc-1-s1.bnbchain.org:8545
+    <Rpc>k__BackingField: https://data-seed-prebsc-2-s1.bnbchain.org:8545
     <Ws>k__BackingField: wss://bsc-testnet-rpc.publicnode.com
     <BlockExplorerUrl>k__BackingField: https://testnet.bscscan.com

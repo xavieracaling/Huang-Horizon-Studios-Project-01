@@ -87,9 +87,9 @@ public class BoosterItemPurchase : MonoBehaviour
         var request = new ExecuteCloudScriptRequest
         {
             FunctionName = "buyBoosterViaTicket",
-            FunctionParameter = new {
-                playerId = PlayFabManager.Instance.PlayFabID,
-                itemPriceTicket = (Int64)TapTicketPrice,
+            FunctionParameter = new Dictionary<string, object> {
+        { "playerId", PlayFabSettings.staticPlayer.PlayFabId },
+        { "itemPriceTicket", (Int64)TapTicketPrice }
             }
 
         };

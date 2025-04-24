@@ -102,26 +102,36 @@ public class LevelManager : MonoBehaviour
         var request = new ExecuteCloudScriptRequest
         {
             FunctionName = "getXP",
-            FunctionParameter = new {
-                playerId = PlayFabManager.Instance.PlayFabID
+            FunctionParameter = new Dictionary<string, object> {
+        { "playerId", PlayFabSettings.staticPlayer.PlayFabId }
             }
         };
         
         PlayFabClientAPI.ExecuteCloudScript(request,result => {
-            var json = result.FunctionResult.ToString();
-
-            var getXPResult = JsonUtility.FromJson<GetXPResult>(json);
+   
+            string json = result.FunctionResult.ToString();
+            Debug.Log("Parsed CloudScript result: " + json);
+            var getXPResult = JsonConvert.DeserializeObject<GetXPResult>(json);
             
-            _playerLevel = JsonUtility.FromJson<PlayerLevel>(getXPResult.PlayerLevelInfo);
-            LatestGetXPResult = getXPResult;
-
-            if (getXPResult.IsLevelUp)
+            if (getXPResult != null )
             {
-                RequiredXP = _playerLevel.RequiredXP;
-                CurrentLevel = _playerLevel.CurrentLevel;
+                _playerLevel = JsonConvert.DeserializeObject<PlayerLevel>(getXPResult.PlayerLevelInfo);
+                LatestGetXPResult = getXPResult;
+                if (getXPResult.IsLevelUp)
+                {
+                    RequiredXP = _playerLevel.RequiredXP;
+                    CurrentLevel = _playerLevel.CurrentLevel;
+                }
+                CurrentXP = _playerLevel.CurrentXP;
             }
-            CurrentXP = _playerLevel.CurrentXP;
+            else
+            {
+                Debug.LogWarning("getXP 111 not found in user data");
+            }
+        
+        
             
+
         }, error => Debug.Log("error")) ;
 
     }

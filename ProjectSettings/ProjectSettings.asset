@@ -683,7 +683,7 @@ PlayerSettings:
   webGLDebugSymbols: 0
   webGLEmscriptenArgs: 
   webGLModulesDirectory: 
-  webGLTemplate: Web3.Unity
+  webGLTemplate: PROJECT:Web3.Unity
   webGLAnalyzeBuildSize: 0
   webGLUseEmbeddedResources: 1
   webGLCompressionFormat: 2

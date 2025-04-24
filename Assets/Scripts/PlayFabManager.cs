@@ -120,7 +120,7 @@ public class PlayFabManager : MonoBehaviour
     }
     void testServerPlayfabSuccess(ExecuteCloudScriptResult executeCloudScriptResult)
     {
-        Debug.Log(executeCloudScriptResult.FunctionResult.ToString());
+     
 
     }
     void testServerPlayfabError(PlayFabError error)
@@ -150,9 +150,9 @@ public class PlayFabManager : MonoBehaviour
                     var request = new ExecuteCloudScriptRequest
                     {
                         FunctionName = "addReferral",
-                        FunctionParameter = new { 
-                            referringPlayerIds = h ,
-                            playerId = PlayFabSettings.staticPlayer.PlayFabId 
+                        FunctionParameter = new Dictionary<string, object> {
+                        { "playerId", PlayFabSettings.staticPlayer.PlayFabId},
+                        { "referringPlayerIds", h},
                             },
                         GeneratePlayStreamEvent = true
                     };
@@ -161,7 +161,8 @@ public class PlayFabManager : MonoBehaviour
                     {
 
                       //  UIManager.Instance.InstantiateTenMessagerReferralPop("10");
-                        _TapTicketsInfo = JsonConvert.DeserializeObject<TapTicketsInfo>(result.FunctionResult.ToString());
+                        string json = result.FunctionResult as string;
+                        _TapTicketsInfo = JsonConvert.DeserializeObject<TapTicketsInfo>(json);
                         UIManager.Instance.UpdateUITapTickets();
                         Debug.Log("Referral added!" );
                     }, error =>
@@ -188,10 +189,10 @@ public class PlayFabManager : MonoBehaviour
         var request = new ExecuteCloudScriptRequest
         {
             FunctionName = "validateReferralCode",
-            FunctionParameter = new
-            {
-                referringPlayerIds = referringId
-            },
+            FunctionParameter = new Dictionary<string, object> {
+                        { "referringPlayerIds", referringId},
+                            },
+        
             GeneratePlayStreamEvent = false
         };
 
@@ -295,9 +296,10 @@ public class PlayFabManager : MonoBehaviour
                             var request = new ExecuteCloudScriptRequest
                             {
                                 FunctionName = "newTicketReferralRefresh",
-                                FunctionParameter = new {
-                                    playerID = PlayFabID
-                                }
+                                 FunctionParameter = new Dictionary<string, object> {
+                                { "playerID", PlayFabID},
+                                    },
+                               
                             };
 
                             PlayFabClientAPI.ExecuteCloudScript(request, success => {Debug.Log("Refreshed newTicketReferralRefresh");}, error => {Debug.Log("Error newTicketReferralRefresh");});
@@ -790,13 +792,13 @@ public class PlayFabManager : MonoBehaviour
         // Handle session status
         if (PlayFabManager.Instance.LoginSessionCheckStatus == "1")
         {
-            Debug.Log("Your login session is not expired.");
+            Debug.Log("V2 Your login session is not expired.");
             action?.Invoke(); // Execute the passed action
         }
         else if (PlayFabManager.Instance.LoginSessionCheckStatus == "-1")
         {
             UIManager.Instance.InstantiateMessagerPopPrefab_Restart("Your login session has now expired, please login again.");
-            Debug.Log("Your login session has now expired, please login again.");
+            Debug.Log("V2 Your login session has now expired, please login again.");
             // Handle expired session (e.g., redirect to login)
         }
     }

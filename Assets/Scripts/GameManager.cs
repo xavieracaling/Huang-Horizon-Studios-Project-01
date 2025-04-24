@@ -9,6 +9,7 @@ using GUPS.AntiCheat.Protected;
 using System;
 using PlayFab.ClientModels;
 using PlayFab;
+[Serializable]
 public class CheckLevelUnlockInfo
 {
     public bool UnlockedLevel;
@@ -73,31 +74,39 @@ public class GameManager : MonoBehaviour
 
     public void StartGameAdventure() => PlayFabManager.Instance.ExecuteWithSessionCheck( () => 
     {
+
         GameObject loading = UIManager.Instance.LoadingShow();
+
         loading.transform.SetAsLastSibling();
+
         var request = new ExecuteCloudScriptRequest
         {
             FunctionName = "checkLevelUnlock",
-            FunctionParameter = new {
-                playerId =  PlayFabManager.Instance.PlayFabID
-            }
+            FunctionParameter = new Dictionary<string, object> {
+        { "playerId", PlayFabSettings.staticPlayer.PlayFabId }
+            },
         };
-        PlayFabClientAPI.ExecuteCloudScript(request,result => 
-        {
-            
-            CheckLevelUnlockInfo checkLevelUnlockInfo = JsonConvert.DeserializeObject<CheckLevelUnlockInfo> (result.FunctionResult.ToString());
-            if (!checkLevelUnlockInfo.UnlockedLevel)
+        Debug.Log("ExecuteCloudScript") ; 
+
+        PlayFabClientAPI.ExecuteCloudScript(request,result1 => 
+        {   
+            string json = result1.FunctionResult.ToString();
+            Debug.Log("Parsed CloudScript result: " + json);
+            CheckLevelUnlockInfo checkLevelUnlockInfo = JsonConvert.DeserializeObject<CheckLevelUnlockInfo>(json);
+            if (checkLevelUnlockInfo != null && !checkLevelUnlockInfo.UnlockedLevel)
             {
                 Destroy(loading);
                 UIManager.Instance.InstantiateMessagerPopPrefabFull(
-                    $"Unable to enter.\n \n To continue leveling from <color=#00FF00>{LevelManager.Instance.CurrentLevel}</color>, you need at least <color=#00FF00>{checkLevelUnlockInfo.RequiredTotalReferrals}</color> Total Referrals. \n \n Right now you only have <color=#00FF00>{checkLevelUnlockInfo.MyCurrentTotalReferrals} </color> Total referrals "
-                ,
-                () => AdventureMode.Instance.ReferralPanel.SetActive(true),false
+                    $"Unable to enter.\n\nTo continue leveling from <color=#00FF00>{LevelManager.Instance.CurrentLevel}</color>, you need at least <color=#00FF00>{checkLevelUnlockInfo.RequiredTotalReferrals}</color> Total Referrals.\n\nRight now you only have <color=#00FF00>{checkLevelUnlockInfo.MyCurrentTotalReferrals}</color> Total referrals.",
+                    () => AdventureMode.Instance.ReferralPanel.SetActive(true),
+                    false
                 );
+
                 if (CurrentMode == Modes.Adventure)
                 {
                     GotoMenu();
                 }
+
                 return;
             }
             Destroy(loading);
@@ -106,7 +115,8 @@ public class GameManager : MonoBehaviour
             GameContainer.SetActive(true);
             GameContainer_BoosterMode.SetActive(false);
             GameContainer_Adventure.SetActive(true);
-
+           
+          
                
         }, error => { Destroy(loading); Debug.Log("error") ;}  );
 

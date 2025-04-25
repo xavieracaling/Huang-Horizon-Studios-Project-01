@@ -6,6 +6,7 @@ using UnityEngine.UI;
 using DG.Tweening;
 public class UIManager : MonoBehaviour
 {
+    public bool DisableTweenSHOP;
     public List<Sprite> BoosterPackIcons = new List<Sprite>();
     public Text AddressPlayerUI;
     public Text NamePlayerUI;
@@ -117,17 +118,27 @@ public class UIManager : MonoBehaviour
         {
             item.SetActive(false);
         }
-        foreach (var item in ListCategoriesT)
+        
+        if (!DisableTweenSHOP)
         {
-            if (item != categoryT.transform)
+            foreach (var item in ListCategoriesT)
             {
-                item.transform.DOKill(false);
-                item.transform.DOLocalMoveX(-7.299999f,0.35f).SetEase(Ease.InOutSine);
+                if (item != categoryT.transform)
+                {
+                    item.transform.DOKill(false);
+                    item.transform.DOLocalMoveX(-7.299999f,0.35f).SetEase(Ease.InOutSine);
+                }
             }
         }
+
         categoryTarget.SetActive(true);
-        categoryT.DOKill(false);
-        categoryT.DOLocalMoveX(-24.45843f,0.25f).SetEase(Ease.InOutSine);
+        if (!DisableTweenSHOP)
+        {
+        
+            categoryT.DOKill(false);
+            categoryT.DOLocalMoveX(-24.45843f,0.25f).SetEase(Ease.InOutSine);
+        
+        }
 
         ScrollRect_CategoryShop.content = categoryTarget.GetComponent<RectTransform>();
     }

@@ -2,6 +2,7 @@
   "dependencies": {
     "com.tools.webglthreadingpatcher": "https://github.com/VolodymyrBS/WebGLThreadingPatcher.git",
     "com.unity.2d.sprite": "1.0.0",
+    "com.unity.addressables": "1.21.21",
     "com.unity.collab-proxy": "2.5.2",
     "com.unity.feature.2d": "2.0.1",
     "com.unity.feature.mobile": "1.0.0",

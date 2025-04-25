@@ -252,9 +252,8 @@ public class PlayFabManager : MonoBehaviour
     {
         Debug.Log("Login successful!");
         PlayFabID = result.PlayFabId;
-        Referral1UI.text = $"https://bnb-clickrush.com/game?referralCode={PlayFabID}";
+        Referral1UI.text = $"https://cryptorusher.com/game/?referral_id={PlayFabID}";
         Referral2UI.text = $"{PlayFabID}";
-        Debug.Log("PlayFab ID: " + result.PlayFabId);
         if (result.NewlyCreated) // new created
         {
             UIManager.Instance.NameContainerUI.SetActive(true);

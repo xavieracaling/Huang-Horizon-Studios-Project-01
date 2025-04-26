@@ -28,6 +28,10 @@ public class PlayFabManager : MonoBehaviour
     public Text Referral2UI;
     long targetT;
     public string ReferredBy;
+    public Text TotalReferralUI;
+    public Text Level1ReferralUI;
+    public Text Level2ReferralUI;
+    public Text Level3ReferralUI;
     void Awake()
     {
         Instance = this;
@@ -285,6 +289,13 @@ public class PlayFabManager : MonoBehaviour
                         _PlayerLevel = JsonConvert.DeserializeObject<PlayerLevel>(result.Data["PlayerLevel"].Value);
                         LevelManager.Instance.SetLevelInfos(_PlayerLevel);
                         _PlayerReferral = JsonConvert.DeserializeObject<PlayerReferral>(result.Data["PlayerReferral"].Value);
+                        if (_PlayerReferral.TotalReferrals > 0)
+                        {
+                            TotalReferralUI.text = _PlayerReferral.TotalReferrals.ToString();
+                            Level1ReferralUI.text = _PlayerReferral.TotalFirstReferrals.ToString();
+                            Level2ReferralUI.text = _PlayerReferral.TotalSecondReferrals.ToString();
+                            Level3ReferralUI.text = _PlayerReferral.TotalThirdReferrals.ToString();
+                        }
                         if (_PlayerReferral.TotalReferrals > 0 && GameManager.Instance._PlayerGameDataProtected.OwnedBoosterPacks.Count > 0)
                         {
                             RefreshReferrals();
@@ -418,7 +429,7 @@ public class PlayFabManager : MonoBehaviour
         int newID = 0;
         bool containsID = false;
 
-        boosterPackProtected.TimeExpirationsProtected.ExpireTarget = (DateTimeOffset.UtcNow + TimeSpan.FromHours(2) ).ToUnixTimeMilliseconds();
+        boosterPackProtected.TimeExpirationsProtected.ExpireTarget = (DateTimeOffset.UtcNow + TimeSpan.FromDays(boosterPackProtected.FinalTimeExpire) ).ToUnixTimeMilliseconds();
         if(GameManager.Instance._PlayerGameDataProtected.OwnedBoosterPacks.Count > 0)
         {
             for (int i = 0; i < 1000; i++)

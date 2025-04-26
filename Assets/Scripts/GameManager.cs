@@ -46,6 +46,7 @@ public class GameManager : MonoBehaviour
     public Modes CurrentMode;
     public GameObject GameContainer_Adventure;
     public GameObject GameContainer_BoosterMode;
+    
     void Awake()
     {
         AbleToSavePlayerData = true;

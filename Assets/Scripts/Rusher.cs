@@ -56,7 +56,7 @@ public class Rusher : MonoBehaviour
             UIManager.Instance.UpdateUIClicks((int)playerBoosterPackProtected.AvailableClicks,(float)playerBoosterPackProtected.TotalBNBEarned );
             if (playerBoosterPackProtected.AvailableClicks <= 0)
             {
-               GameManager.Instance.CurrentUsedPlayerBoosterPackProtected.TimeExpirationsProtected.DailyResetTarget = (DateTimeOffset.UtcNow + TimeSpan.FromSeconds(25) ).ToUnixTimeMilliseconds();
+               GameManager.Instance.CurrentUsedPlayerBoosterPackProtected.TimeExpirationsProtected.DailyResetTarget = (DateTimeOffset.UtcNow + TimeSpan.FromHours(playerBoosterPackProtected.DailyTimeExpire) ).ToUnixTimeMilliseconds();
             }
 
             GameManager.Instance.ListOfOnSavePlayerData.Add( () => PlayFabManager.Instance.SavePlayerBoosterPackData());

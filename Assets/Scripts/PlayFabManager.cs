@@ -643,14 +643,15 @@ public class PlayFabManager : MonoBehaviour
                     {
                         PlayFabClientAPI.UpdateUserTitleDisplayName(nicknameRequest, (Action<UpdateUserTitleDisplayNameResult>)(result =>
                         {
-                            if (WebglReferral.Instance.ReferralID == "" )
-                            {
+                            if (string.IsNullOrEmpty(WebglReferral.Instance.ReferralID))
+                            {   
                                 UIManager.Instance.InstantiateNewbieReferral();
                             }
                             else
                             {
                                 UIManager.Instance.InstantiateMessagerReferralPop("10");
-                            }
+                            }   
+                            
                             Debug.Log("Nickname successfully set to: " + result.DisplayName);
                             PlayerName = result.DisplayName;
                             UIManager.Instance.ConnectedSceneUI();
@@ -659,13 +660,14 @@ public class PlayFabManager : MonoBehaviour
                             Debug.LogError("Failed to set nickname: " + error.GenerateErrorReport());
                         });
                     };
-                    if (WebglReferral.Instance.ReferralID != "" )
-                    {
-                        ValidateReferralCode(WebglReferral.Instance.ReferralID, () => Debug.Log("Check "),  ()  => checkReferralAfterNickname?.Invoke () );
+                    if (string.IsNullOrEmpty(WebglReferral.Instance.ReferralID ))
+                    {   
+                        checkReferralAfterNickname?.Invoke ();
                     }
                     else
                     {
-                        checkReferralAfterNickname?.Invoke ();
+                        Debug.Log($"Called WebglReferral.Instance.ReferralID = '{WebglReferral.Instance.ReferralID }'");
+                        ValidateReferralCode(WebglReferral.Instance.ReferralID, () => Debug.Log("Check "),  ()  => checkReferralAfterNickname?.Invoke () );
                     }
                     Debug.Log($"Player GameData updated successfully. {LoginStateSession} ");
 

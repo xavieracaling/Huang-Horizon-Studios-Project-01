@@ -69,11 +69,9 @@ public class BoosterItemPurchase : MonoBehaviour
             yield return new WaitUntil(() => deposit.IsCompleted); 
             Destroy(loading);
 
-            Debug.Log("Transaction complete!");
         }
         else 
         {
-            Debug.Log("No money");
             UIManager.Instance.InstantiateMessagerPopPrefab_Message($"Failed to buy booster. Not enough BNB") ;
             Destroy(loading);
             

@@ -87,12 +87,10 @@ public class GameManager : MonoBehaviour
         { "playerId", PlayFabSettings.staticPlayer.PlayFabId }
             },
         };
-        Debug.Log("ExecuteCloudScript") ; 
 
         PlayFabClientAPI.ExecuteCloudScript(request,result1 => 
         {   
             string json = result1.FunctionResult.ToString();
-            Debug.Log("Parsed CloudScript result: " + json);
             CheckLevelUnlockInfo checkLevelUnlockInfo = JsonConvert.DeserializeObject<CheckLevelUnlockInfo>(json);
             if (checkLevelUnlockInfo != null && !checkLevelUnlockInfo.UnlockedLevel)
             {
@@ -135,12 +133,10 @@ public class GameManager : MonoBehaviour
         CurrentMode = Modes.BoosterMode;
         if(_PlayerGameDataProtected.OwnedBoosterPacks.Count > 0 )
         {
-            Debug.Log($"_PlayerGameDataProtected.OwnedBoosterPacks.Count {_PlayerGameDataProtected.OwnedBoosterPacks.Count}");
             BoosterManager.Instance.BoosterShow();
         }
         else
         {
-            Debug.Log("No boosters!");
             BoosterManager.Instance.NoBooster();
         }
     });
@@ -181,7 +177,6 @@ public class GameManager : MonoBehaviour
         MenuCenterBG.SetActive(false);
         StartISavePlayerData();
         IStartSpawnRushers = StartCoroutine(StartSpawnRushers());
-        Debug.Log("Game has started!");
     }
   
     public void CompletedBooster()

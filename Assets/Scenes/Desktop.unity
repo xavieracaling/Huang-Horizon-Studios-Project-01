@@ -33845,8 +33845,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 57d07df794bbc1a4eb5e77d212a334dc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  contractAddress: 0x2a7905505AeA13896dd679312019212E21A0fA69
-  privateKey: e992704ff76a7fc1529d0d7a4612a4818935b11f45c52b1ab01156155c808907
+  contractAddress: 0xc2080145119e4df02906BaA672DF8C395874b72C
+  privateKey: 761e73222f5c2c9f540da203cefbdc1a83cb52f5c587ad7b0e13d0d470c335fc
   AmountUI: {fileID: 1724925965}
   testSignedMessage: 
 --- !u!1 &1797776552

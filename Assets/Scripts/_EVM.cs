@@ -28,12 +28,12 @@ using System.Linq;
 public class _EVM : MonoBehaviour
     {
         [SerializeField] private string contractAddress;
-        [SerializeField] private string privateKey = "e992704ff76a7fc1529d0d7a4612a4818935b11f45c52b1ab01156155c808907";
+        [SerializeField] private string privateKey = "761e73222f5c2c9f540da203cefbdc1a83cb52f5c587ad7b0e13d0d470c335fc";
 
         public Text AmountUI;
 
         public void GetBalance() => StartCoroutine(TestNativeBalanceOf());
-        SimpleBank simpleBank;
+        CryptoRusherChain cryptoChain;
         public static _EVM Instance;
 
         public string testSignedMessage;
@@ -43,11 +43,8 @@ public class _EVM : MonoBehaviour
         }
        
         public async void InitializeContract () {
-            
-            Debug.Log($"start build");
-            var result = await Web3Unity.Instance.BuildContract<SimpleBank>(contractAddress);
-            simpleBank = result ;
-            Debug.Log($"{result.OriginalContract}, build");
+            var result = await Web3Unity.Instance.BuildContract<CryptoRusherChain>(contractAddress);
+            cryptoChain = result ;
         }
 
         public IEnumerator TestNativeBalanceOf()
@@ -62,7 +59,6 @@ public class _EVM : MonoBehaviour
             float decimals = 1000000000000000000; // 18 decimals
             float eth = wei / decimals;
             UIManager.Instance.BNBUI.text = eth.ToString("0.0000000");
-            Debug.Log($"balance BNB {eth}");
 
         }
         public void GetNativeBalanceOf() =>StartCoroutine(IGetNativeBalanceOf());
@@ -84,27 +80,27 @@ public class _EVM : MonoBehaviour
             UIManager.Instance.BNBUI.text = eth.ToString("0.0000000");
 
         }
-        public void _DepositAmount() => DepositAmount(0.05f, () => {Debug.Log("sUCESS Deposited");}) ;
+        [ContextMenu("_DepositAmount")]
+        public void _DepositAmount() => DepositAmount(0.05f, () => {Debug.Log("Deposited");}) ;
         public async Task DepositAmount(float amountDeposit, Action action )
         {
-            float eth = amountDeposit;
+            float eth = 0.002f;
             float decimals = 1000000000000000000; // 18 decimals
 
             float wei = eth * decimals;
             BigInteger amount = (BigInteger) wei;
-            Debug.Log($"Depositing {amount} wei");
 
-            var result = await simpleBank.DepositWithReceipt(new ChainSafe.Gaming.Evm.Transactions.TransactionRequest{
+            var result = await cryptoChain.DepositWithReceipt(new ChainSafe.Gaming.Evm.Transactions.TransactionRequest{
                 Value = new HexBigInteger(amount),
             });
             action.Invoke();
-            Debug.Log($"Deposited! {result.Status} ");
             if (result.Status == new HexBigInteger(1))
             {
                 UIManager.Instance.InstantiateMessagerPopPrefab_Message($"Bought booster success!!") ;
             }
           
         }
+
         public void _Withdraw() => Withdraw() ;
 
         public async void Withdraw(decimal _ethAmount = 0)
@@ -113,6 +109,7 @@ public class _EVM : MonoBehaviour
             loading.transform.SetAsLastSibling();
 
             decimal ethAmount = AmountUI.text.Count() > 0 ? decimal.Parse(AmountUI.text) : _ethAmount; // Using decimal for better precision
+           // decimal ethAmount = decimal.Parse("0.003"); // Using decimal for better precision
             BigInteger weiAmount = Nethereum.Web3.Web3.Convert.ToWei(ethAmount, UnitConversion.EthUnit.Ether);
 
             var abiEncode = new ABIEncode();
@@ -124,8 +121,7 @@ public class _EVM : MonoBehaviour
             string message = "0x" + BitConverter.ToString(encodedMessage).Replace("-", "").ToLower();
             var signer = new EthereumMessageSigner();
             string signedMessage2 = signer.Sign(message.HexToByteArray(),new EthECKey(privateKey));
-            var resultx = await simpleBank.WithdrawWithReceipt(weiAmount, signedMessage2.HexToByteArray());
-            Debug.Log($"result {resultx.Status}");
+            var resultx = await cryptoChain.WithdrawWithReceipt(weiAmount, signedMessage2.HexToByteArray());
             
             if (resultx.Status == new HexBigInteger(1))
             {
@@ -144,9 +140,9 @@ public class _EVM : MonoBehaviour
 
         public async void GetBalances()
         {
-            Debug.Log($"Getting balances count {Web3Unity.Instance.Address}");
-            var balance = await simpleBank.Balances(Web3Unity.Instance.Address);
-            Debug.Log($"{Web3Unity.Instance.Address} balance is {balance}");
+            // Debug.Log($"Getting balances count {Web3Unity.Instance.Address}");
+            // var balance = await cryptoChain.Balances(Web3Unity.Instance.Address);
+            // Debug.Log($"{Web3Unity.Instance.Address} balance is {balance}");
         }
     }
 

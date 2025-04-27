@@ -83,7 +83,6 @@ public class PlayFabManager : MonoBehaviour
             {
                 UIManager.Instance.InstantiateMessagerPopPrefab_Message("Error booster, please refresh the game.") ;
                 BoosterManager.Instance.YourBoosterGO.SetActive(false);
-                Debug.Log("Error!!");
                 Destroy(loading);
             }
         },
@@ -129,13 +128,11 @@ public class PlayFabManager : MonoBehaviour
     }
     void testServerPlayfabError(PlayFabError error)
     {
-        Debug.Log("ERROR");
     }
     [ContextMenu("SendReferral")]
 
     public void GotReferred()
     {
-        Debug.Log($"WebglReferral.Instance.ReferralTest {WebglReferral.Instance.ReferralID}");
         string h = WebglReferral.Instance.ReferralID;
 
         var requestBooster = new GetUserDataRequest
@@ -145,7 +142,6 @@ public class PlayFabManager : MonoBehaviour
 
         PlayFabClientAPI.GetUserData(requestBooster, result =>
         {
-            Debug.Log("User data received:");
             if (result.Data != null)
             {
                 bool boughtBooster = Convert.ToBoolean(result.Data["BoughtFirstBooster"].Value) ;
@@ -168,7 +164,6 @@ public class PlayFabManager : MonoBehaviour
                         string json = result.FunctionResult as string;
                         _TapTicketsInfo = JsonConvert.DeserializeObject<TapTicketsInfo>(json);
                         UIManager.Instance.UpdateUITapTickets();
-                        Debug.Log("Referral added!" );
                     }, error =>
                     {
                         Debug.LogError("Error adding referral: " + error.GenerateErrorReport());
@@ -205,7 +200,6 @@ public class PlayFabManager : MonoBehaviour
             if (result.FunctionResult != null)
             {
                 bool isValid = Convert.ToBoolean(result.FunctionResult);
-                Debug.Log("Referral Code Valid: " + isValid);
                 Destroy(loading);
                 if (isValid)
                 {
@@ -219,7 +213,6 @@ public class PlayFabManager : MonoBehaviour
                     };
                     PlayFabClientAPI.UpdateUserData(request, result =>
                     {
-                        Debug.Log($"ReferredBy updated successfully. ");
                         completedAction?.Invoke();
                     }, error =>
                     {
@@ -254,7 +247,6 @@ public class PlayFabManager : MonoBehaviour
     }
     void onLoginSuccess(LoginResult result)
     {
-        Debug.Log("Login successful!");
         PlayFabID = result.PlayFabId;
         Referral1UI.text = $"https://cryptorusher.com/game/?referral_id={PlayFabID}";
         Referral2UI.text = $"{PlayFabID}";
@@ -411,7 +403,6 @@ public class PlayFabManager : MonoBehaviour
                     GameManager.Instance.StopISavePlayerData();
                 }
             }
-            Debug.Log($"Player GameData updated successfully. {LoginStateSession} ");
             GameManager.Instance.AbleToSavePlayerData = true;
             if (action != null)
             {
@@ -519,11 +510,9 @@ public class PlayFabManager : MonoBehaviour
 
                 PlayFabClientAPI.UpdateUserData(updateBooster, result =>
                 {
-                    Debug.Log($"updateBooster successfully. {LoginStateSession} ");
                     PlayFabClientAPI.UpdateUserData(request, result =>
                     {
                         GotReferred();
-                        Debug.Log($"Player GameData updated successfully. {LoginStateSession} ");
                     }, error =>
                     {
                         UIManager.Instance.InstantiateMessagerPopPrefab_Restart("Server error, please restart the game.");
@@ -539,7 +528,6 @@ public class PlayFabManager : MonoBehaviour
             {
                 PlayFabClientAPI.UpdateUserData(request, result =>
                 {
-                    Debug.Log($"Player GameData updated successfully. {LoginStateSession} ");
                 }, error =>
                 {
                     UIManager.Instance.InstantiateMessagerPopPrefab_Restart("Server error, please restart the game.");
@@ -554,7 +542,6 @@ public class PlayFabManager : MonoBehaviour
     }
     public void RefreshReferrals()
     {
-        Debug.Log($"RefreshReferrals 1");
 
         PlayerGameDataUnProtected playerGameDataUnProtected = GameManager.Instance._PlayerGameDataProtected.ConvertToPlayerGameDataUnProtected();
         foreach (var item in playerGameDataUnProtected.OwnedBoosterPacksUnProtected)
@@ -576,8 +563,6 @@ public class PlayFabManager : MonoBehaviour
         
         PlayFabClientAPI.UpdateUserData(request, result =>
         {
-            Debug.Log($"RefreshReferrals 2");
-            Debug.Log($"Player GameData updated successfully. {LoginStateSession} ");
         }, error =>
         {
             UIManager.Instance.InstantiateMessagerPopPrefab_Restart("Server error, please restart the game.");
@@ -588,7 +573,6 @@ public class PlayFabManager : MonoBehaviour
     {
         if(UIManager.Instance.NameUI.text.Count() > 0)
         {
-            Debug.Log($"New account created!");
             PlayerGameDataUnProtected playerGameDataUnProtected = new PlayerGameDataUnProtected{
                 OwnedBoosterPacksUnProtected = new List<PlayerBoosterPackUnProtected>()
             };
@@ -652,7 +636,6 @@ public class PlayFabManager : MonoBehaviour
                                 UIManager.Instance.InstantiateMessagerReferralPop("10");
                             }   
                             
-                            Debug.Log("Nickname successfully set to: " + result.DisplayName);
                             PlayerName = result.DisplayName;
                             UIManager.Instance.ConnectedSceneUI();
                         }), error =>
@@ -666,10 +649,8 @@ public class PlayFabManager : MonoBehaviour
                     }
                     else
                     {
-                        Debug.Log($"Called WebglReferral.Instance.ReferralID = '{WebglReferral.Instance.ReferralID }'");
                         ValidateReferralCode(WebglReferral.Instance.ReferralID, () => Debug.Log("Check "),  ()  => checkReferralAfterNickname?.Invoke () );
                     }
-                    Debug.Log($"Player GameData updated successfully. {LoginStateSession} ");
 
             }, error =>
             {
@@ -701,43 +682,35 @@ public class PlayFabManager : MonoBehaviour
                         {
                             if(LoginStateUpdatedSession != LoginStateSession)
                             {
-                                Debug.Log("Session Login ID has expired.");
                                 LoginSessionCheckStatus = "-1";
                             }
                             else
                             {
-                                Debug.Log("Session Login ID is still usable.");
                                 LoginSessionCheckStatus = "1";
                             }
                         }
                         else
                         {
-                            Debug.Log("Session Login ID is still usable.");
                             LoginSessionCheckStatus = "1";
                         }
 
                    }
                    else
                    {
-                        Debug.Log("Session Login ID is still usable.");
                         LoginSessionCheckStatus = "1";
                         LoginStateUpdatedSession = "-1";
-                        Debug.Log("No user data found.");
                    }
                 }
                 else
                 {
-                    Debug.Log("Session Login ID is still usable.");
                     LoginSessionCheckStatus = "1";
                     LoginStateUpdatedSession = "-1";
                 }
             }
             else
             {
-                Debug.Log("Session Login ID is still usable.");
                 LoginSessionCheckStatus = "1";
                 LoginStateUpdatedSession = "-1";
-                Debug.Log("No user data found.");
             }
         }, error =>
         {
@@ -783,7 +756,6 @@ public class PlayFabManager : MonoBehaviour
 
         PlayFabClientAPI.UpdateUserData(request, result =>
         {
-            Debug.Log($"Player data ID updated successfully. {LoginStateSession} ");
         }, error =>
         {
             UIManager.Instance.InstantiateMessagerPopPrefab_Restart("Server error, please restart the game.");
@@ -804,13 +776,11 @@ public class PlayFabManager : MonoBehaviour
         // Handle session status
         if (PlayFabManager.Instance.LoginSessionCheckStatus == "1")
         {
-            Debug.Log("V2 Your login session is not expired.");
             action?.Invoke(); // Execute the passed action
         }
         else if (PlayFabManager.Instance.LoginSessionCheckStatus == "-1")
         {
             UIManager.Instance.InstantiateMessagerPopPrefab_Restart("Your login session has now expired, please login again.");
-            Debug.Log("V2 Your login session has now expired, please login again.");
             // Handle expired session (e.g., redirect to login)
         }
     }

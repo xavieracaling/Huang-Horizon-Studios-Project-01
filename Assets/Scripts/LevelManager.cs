@@ -7,6 +7,8 @@ using Unity.VisualScripting;
 using PlayFab.ClientModels;
 using PlayFab;
 using Newtonsoft.Json;
+using System.Text;
+using System.Security.Cryptography;
 [Serializable]
 public class GetXPResult
 {
@@ -82,8 +84,36 @@ public class LevelManager : MonoBehaviour
     void Start()
     {
         //TestInit();
+}
+    [ContextMenu("TESTCallCloudScriptWithSHA256")]
+    public void CallCloudScriptWithSHA256(string data)
+    {
+        // Hash the data using SHA256 before sending it to PlayFab
+        string hashedData = GetSHA256Hash("TESTCallCloudScriptWithSHA256");
+
+        Debug.Log($"try : {hashedData}");
+        // Now call PlayFab CloudScript with the hashed data
+        // var request = new ExecuteCloudScriptRequest
+        // {
+        //     FunctionName = "YourCloudScriptFunction", // Your CloudScript function name
+        //     FunctionParameter = new { hashedData = hashedData },
+        //     GeneratePlayStreamEvent = true
+        // };
+
     }
-    
+    private string GetSHA256Hash(string input)
+    {
+        using (SHA256 sha256 = SHA256.Create())
+        {
+            byte[] hashBytes = sha256.ComputeHash(Encoding.UTF8.GetBytes(input));
+            StringBuilder hashStringBuilder = new StringBuilder();
+            foreach (byte b in hashBytes)
+            {
+                hashStringBuilder.Append(b.ToString("x2"));
+            }
+            return hashStringBuilder.ToString();
+        }
+    }
     [ContextMenu("TestXPGain")]
     public void TestXPGain()
     {
@@ -109,8 +139,7 @@ public class LevelManager : MonoBehaviour
         
         PlayFabClientAPI.ExecuteCloudScript(request,result => {
    
-            string json = result.FunctionResult.ToString();
-            Debug.Log("Parsed CloudScript result: " + json);
+            ProtectedString json = result.FunctionResult.ToString();
             var getXPResult = JsonConvert.DeserializeObject<GetXPResult>(json);
             
             if (getXPResult != null )

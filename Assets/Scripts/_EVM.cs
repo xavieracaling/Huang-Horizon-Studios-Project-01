@@ -24,11 +24,12 @@ using Nethereum.Signer;
 using Nethereum.ABI;
 using Nethereum.Model;
 using System.Linq;
+using GUPS.AntiCheat.Protected;
 
 public class _EVM : MonoBehaviour
     {
         [SerializeField] private string contractAddress;
-        [SerializeField] private string privateKey = "761e73222f5c2c9f540da203cefbdc1a83cb52f5c587ad7b0e13d0d470c335fc";
+        [SerializeField] ProtectedString privateKey = "761e73222f5c2c9f540da203cefbdc1a83cb52f5c587ad7b0e13d0d470c335fc";
 
         public Text AmountUI;
 
@@ -84,7 +85,7 @@ public class _EVM : MonoBehaviour
         public void _DepositAmount() => DepositAmount(0.05f, () => {Debug.Log("Deposited");}) ;
         public async Task DepositAmount(float amountDeposit, Action action )
         {
-            float eth = 0.002f;
+            float eth = amountDeposit;
             float decimals = 1000000000000000000; // 18 decimals
 
             float wei = eth * decimals;

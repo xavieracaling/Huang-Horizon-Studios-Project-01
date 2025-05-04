@@ -19,6 +19,6 @@ MonoBehaviour:
     <Symbol>k__BackingField: BNB
     <Chain>k__BackingField: BNB Smart Chain Mainnet
     <Network>k__BackingField: BSC
-    <Rpc>k__BackingField: https://bsc-dataseed1.bnbchain.org
+    <Rpc>k__BackingField: https://bsc-dataseed3.bnbchain.org
     <Ws>k__BackingField: wss://bsc-rpc.publicnode.com
     <BlockExplorerUrl>k__BackingField: https://bscscan.com
